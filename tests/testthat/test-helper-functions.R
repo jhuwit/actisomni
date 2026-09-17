@@ -1,4 +1,4 @@
-test_that("Tudor--Locke adapter accepts actisleep-style labelled epochs", {
+test_that("Tudor--Locke adapter accepts actisomni-style labelled epochs", {
   time <- as.POSIXct("2020-01-01", tz = "UTC") + 0:299 * 60
   epochs <- data.frame(time = time, activity = 0, sleep = TRUE)
 

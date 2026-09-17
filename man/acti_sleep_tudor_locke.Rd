@@ -49,7 +49,7 @@ A tibble of Tudor--Locke sleep periods and metrics, as returned by
 \code{\link[actigraph.sleepr:apply_tudor_locke]{actigraph.sleepr::apply_tudor_locke()}}.
 }
 \description{
-Coerces actisleep-style epoch data to an \code{actigraph.sleepr} \code{tbl_agd} and
+Coerces actisomni-style epoch data to an \code{actigraph.sleepr} \code{tbl_agd} and
 delegates period detection and metric calculation to
 \code{\link[actigraph.sleepr:apply_tudor_locke]{actigraph.sleepr::apply_tudor_locke()}}. This avoids maintaining a separate
 implementation of the Tudor--Locke rules.

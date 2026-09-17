@@ -1,3 +1,3 @@
-# actisleep 0.1.0
+# actisomni 0.1.0
 
 * Initial creation.

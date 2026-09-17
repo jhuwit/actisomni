@@ -24,4 +24,5 @@
 ^todo\.txt$
 ^\.positai$
 ^\.claude$
-^actisleep\.Rproj$
+^actisomni\.Rproj$
+^CRAN-SUBMISSION$

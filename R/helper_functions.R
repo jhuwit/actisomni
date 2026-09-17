@@ -102,7 +102,7 @@ acti_sleep_tudor_locke_diary <- function(data, sleep_diary, time_col = "time",
 
 #' Summarize sleep periods with Tudor--Locke
 #'
-#' Coerces actisleep-style epoch data to an `actigraph.sleepr` `tbl_agd` and
+#' Coerces actisomni-style epoch data to an `actigraph.sleepr` `tbl_agd` and
 #' delegates period detection and metric calculation to
 #' [actigraph.sleepr::apply_tudor_locke()]. This avoids maintaining a separate
 #' implementation of the Tudor--Locke rules.

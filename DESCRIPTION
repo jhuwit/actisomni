@@ -1,5 +1,5 @@
 Type: Package
-Package: actisleep
+Package: actisomni
 Title: Create Sleep Measures of Actigraphy and Activity Analysis
 Version: 0.1.0
 Authors@R: c(
@@ -28,7 +28,6 @@ Suggests:
     rlang,
     actimetrics
 Encoding: UTF-8
-VignetteBuilder: knitr
 Imports: 
     actibase,
     actiread,
@@ -42,5 +41,5 @@ Imports:
     actigraph.sleepr
 LazyData: true
 Config/roxygen2/version: 8.0.0
-URL: https://jhuwit.github.io/actisleep/
-BugReports: https://github.com/jhuwit/actisleep/issues
+URL: https://jhuwit.github.io/actisomni/
+BugReports: https://github.com/jhuwit/actisomni/issues

@@ -3,14 +3,14 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/jhuwit/actisleep/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jhuwit/actisleep/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/jhuwit/actisomni/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jhuwit/actisomni/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/jhuwit/actisleep/branch/main/graph/badge.svg)](https://app.codecov.io/gh/jhuwit/actisleep?branch=main)
+coverage](https://codecov.io/gh/jhuwit/actisomni/branch/main/graph/badge.svg)](https://app.codecov.io/gh/jhuwit/actisomni?branch=main)
 <!-- badges: end -->
 
-# actisleep
+# actisomni
 
-`actisleep` estimates sleep from wrist-worn accelerometry. It provides
+`actisomni` estimates sleep from wrist-worn accelerometry. It provides
 sleep-period-time (SPT) guiders, sustained-inactivity-bout (SIB) labels,
 consensus sleep labels, diary helpers, and wrappers for the `asleep` and
 `sleeper` machine-learning models.
@@ -19,13 +19,19 @@ The guider functions identify a likely main sleep window. Combine one or
 more guiders with a SIB label when an epoch-level sleep/wake label is
 needed.
 
+## Why not `actisleep`?
+
+The original package name was `actisleep`, but that conflicted with a
+previous R package:
+<https://cran.r-project.org/web/packages/ActiSleep/index.html>.
+
 ## Installation
 
 Install the development version from GitHub:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("jhuwit/actisleep")
+remotes::install_github("jhuwit/actisomni")
 ```
 
 ## Sleep guiders and labels
@@ -35,7 +41,7 @@ and then apply a SIB label. The result has one logical sleep label per
 epoch.
 
 ``` r
-library(actisleep)
+library(actisomni)
 
 time <- as.POSIXct("2020-01-01 18:00:00", tz = "UTC") + 0:1439 * 60
 epochs <- data.frame(
@@ -95,7 +101,7 @@ sum(diary_window$window)
 
 For labelled, one-minute epochs, `acti_sleep_tudor_locke()` delegates
 Tudor–Locke period detection and sleep metrics to `actigraph.sleepr`. It
-accepts the usual actisleep column names: `time`, an activity column,
+accepts the usual actisomni column names: `time`, an activity column,
 and a logical or sleep/wake `sleep` column.
 
 ``` r

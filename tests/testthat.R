@@ -5,7 +5,7 @@ if (rlang::is_installed("asleep") && rlang::is_installed("reticulate")) {
   })
 }
 library(testthat)
-library(actisleep)
+library(actisomni)
 
 
-test_check("actisleep")
+test_check("actisomni")
