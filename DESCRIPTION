@@ -42,10 +42,5 @@ Imports:
     actigraph.sleepr
 LazyData: true
 Config/roxygen2/version: 8.0.0
-Remotes:
-  jhuwit/stepcount,
-  jhuwit/actimetrics,
-  jhuwit/sleeper,
-  jhuwit/asleep
-URL: https://jhuwit.github.io/actimetrics/
-BugReports: https://github.com/jhuwit/actimetrics/issues
+URL: https://jhuwit.github.io/actisleep/
+BugReports: https://github.com/jhuwit/actisleep/issues
