@@ -1,7 +1,7 @@
 # Estimate sleep with sleeper in an isolated Python process
 
 Uses
-[`sleeper::py_estimate_sleep()`](https://rdrr.io/pkg/sleeper/man/estimate_sleep.html)
+[`sleeper::py_estimate_sleep()`](https://rdrr.io/pkg/sleeper/man/py_estimate_sleep.html)
 to run the same sleeper model as
 [`acti_sleeper()`](https://jhuwit.github.io/actisleep/reference/acti_sleeper.md)
 in a `callr` subprocess.
