@@ -12,8 +12,7 @@ needed.
 ## Why not `actisleep`?
 
 The original package name was `actisleep`, but that conflicted with a
-previous R package:
-<https://cran.r-project.org/web/packages/ActiSleep/index.html>.
+previous R package: <https://CRAN.R-project.org/package=ActiSleep>.
 
 ## Installation
 
