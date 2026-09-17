@@ -1,6 +1,6 @@
 # Summarize sleep periods with Tudor–Locke
 
-Coerces actisleep-style epoch data to an `actigraph.sleepr` `tbl_agd`
+Coerces actisomni-style epoch data to an `actigraph.sleepr` `tbl_agd`
 and delegates period detection and metric calculation to
 [`actigraph.sleepr::apply_tudor_locke()`](https://rdrr.io/pkg/actigraph.sleepr/man/apply_tudor_locke.html).
 This avoids maintaining a separate implementation of the Tudor–Locke
@@ -43,7 +43,7 @@ acti_sleep_tudor_locke(
 
   Name of a logical sleep column or a character column using `S`/`W` or
   `sleep`/`wake` labels. Use
-  [`acti_sleep_tudor_locke_diary()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_tudor_locke_diary.md)
+  [`acti_sleep_tudor_locke_diary()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_tudor_locke_diary.md)
   to create this column from a sleep diary.
 
 - id_col:

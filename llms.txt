@@ -1,6 +1,6 @@
-# actisleep
+# actisomni
 
-`actisleep` estimates sleep from wrist-worn accelerometry. It provides
+`actisomni` estimates sleep from wrist-worn accelerometry. It provides
 sleep-period-time (SPT) guiders, sustained-inactivity-bout (SIB) labels,
 consensus sleep labels, diary helpers, and wrappers for the `asleep` and
 `sleeper` machine-learning models.
@@ -9,6 +9,12 @@ The guider functions identify a likely main sleep window. Combine one or
 more guiders with a SIB label when an epoch-level sleep/wake label is
 needed.
 
+## Why not `actisleep`?
+
+The original package name was `actisleep`, but that conflicted with a
+previous R package:
+<https://cran.r-project.org/web/packages/ActiSleep/index.html>.
+
 ## Installation
 
 Install the development version from GitHub:
@@ -16,7 +22,7 @@ Install the development version from GitHub:
 ``` r
 
 # install.packages("remotes")
-remotes::install_github("jhuwit/actisleep")
+remotes::install_github("jhuwit/actisomni")
 ```
 
 ## Sleep guiders and labels
@@ -27,7 +33,7 @@ epoch.
 
 ``` r
 
-library(actisleep)
+library(actisomni)
 
 time <- as.POSIXct("2020-01-01 18:00:00", tz = "UTC") + 0:1439 * 60
 epochs <- data.frame(
@@ -49,9 +55,9 @@ head(epochs)
 ```
 
 For raw X/Y/Z acceleration,
-[`acti_sleep_sib()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_sib.md)
+[`acti_sleep_sib()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_sib.md)
 calculates the van Hees SIB indicator and
-[`acti_sleep_ensemble()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_ensemble.md)
+[`acti_sleep_ensemble()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_ensemble.md)
 combines compatible guiders into a consensus label. The example
 recording supplied by `actiread` can be used directly:
 
@@ -90,9 +96,9 @@ sum(diary_window$window)
 ## Tudor–Locke sleep periods and metrics
 
 For labelled, one-minute epochs,
-[`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_tudor_locke.md)
+[`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_tudor_locke.md)
 delegates Tudor–Locke period detection and sleep metrics to
-`actigraph.sleepr`. It accepts the usual actisleep column names: `time`,
+`actigraph.sleepr`. It accepts the usual actisomni column names: `time`,
 an activity column, and a logical or sleep/wake `sleep` column.
 
 ``` r
@@ -128,9 +134,9 @@ cross midnight and span multiple days.
 
 ## Machine-learning model wrappers
 
-[`acti_asleep()`](https://jhuwit.github.io/actisleep/reference/acti_asleep.md)
+[`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
 and
-[`acti_sleeper()`](https://jhuwit.github.io/actisleep/reference/acti_sleeper.md)
+[`acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md)
 both require complete, strictly time-ordered raw triaxial data. They
 return the same columns: `time`, `sleep`, `sleep_probability`,
 `sleep_stage`, `nonwear`, and `method`.
@@ -149,44 +155,44 @@ sleeper_estimate <- acti_sleeper(raw, model_dir = "path/to/sleeper-models")
 
 ## All functions
 
-- [`acti_asleep()`](https://jhuwit.github.io/actisleep/reference/acti_asleep.md)
+- [`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
   : Estimate sleep with the asleep model
-- [`acti_sleep_diary()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_diary.md)
+- [`acti_sleep_diary()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_diary.md)
   : Identify a diary-defined sleep window
-- [`acti_sleep_ensemble()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_ensemble.md)
+- [`acti_sleep_ensemble()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_ensemble.md)
   : Run a sleep-label ensemble from raw or epoch data
-- [`acti_sleep_fuse_labels()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_fuse_labels.md)
+- [`acti_sleep_fuse_labels()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_fuse_labels.md)
   : Fuse multiple sleep/wake labels with STAPLE
-- [`acti_sleep_guider()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_guider.md)
+- [`acti_sleep_guider()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_guider.md)
   : Dispatch a sleep-period-time guider from data
-- [`acti_sleep_guider_requirements()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_guider_requirements.md)
+- [`acti_sleep_guider_requirements()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_guider_requirements.md)
   : Describe data requirements for sleep guiders
-- [`acti_sleep_hdcza()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_hdcza.md)
+- [`acti_sleep_hdcza()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_hdcza.md)
   : Identify a sleep window with HDCZA
-- [`acti_sleep_hlrb()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_hlrb.md)
+- [`acti_sleep_hlrb()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_hlrb.md)
   : Identify the longest rest bout from sustained inactivity bouts
-- [`acti_sleep_horangle()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_horangle.md)
+- [`acti_sleep_horangle()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_horangle.md)
   : Identify a sleep window from horizontal posture
-- [`acti_sleep_l5()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_l5.md)
+- [`acti_sleep_l5()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_l5.md)
   : Identify a sleep window from the least-active five hours
-- [`acti_sleep_label()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_label.md)
+- [`acti_sleep_label()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_label.md)
   : Convert a sleep guider to epoch-level sleep/wake labels
-- [`acti_sleep_labels()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_labels.md)
+- [`acti_sleep_labels()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_labels.md)
   : Create sleep/wake labels for multiple guiders
-- [`acti_sleep_notworn()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_notworn.md)
+- [`acti_sleep_notworn()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_notworn.md)
   : Identify a low-activity window for no-night-wear protocols
-- [`acti_sleep_setwindow()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_setwindow.md)
+- [`acti_sleep_setwindow()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_setwindow.md)
   : Identify a fixed daily sleep window
-- [`acti_sleep_sib()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_sib.md)
+- [`acti_sleep_sib()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_sib.md)
   : Detect sustained inactivity bouts (SIBs)
-- [`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_tudor_locke.md)
+- [`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_tudor_locke.md)
   : Summarize sleep periods with Tudor–Locke
-- [`acti_sleep_tudor_locke_diary()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_tudor_locke_diary.md)
+- [`acti_sleep_tudor_locke_diary()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_tudor_locke_diary.md)
   : Apply a sleep diary to epoch data for Tudor–Locke
-- [`acti_sleeper()`](https://jhuwit.github.io/actisleep/reference/acti_sleeper.md)
+- [`acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md)
   : Estimate sleep with the sleeper model
-- [`py_acti_asleep()`](https://jhuwit.github.io/actisleep/reference/py_acti_asleep.md)
+- [`py_acti_asleep()`](https://jhuwit.github.io/actisomni/reference/py_acti_asleep.md)
   : Estimate sleep with asleep in an isolated Python process
-- [`py_acti_sleeper()`](https://jhuwit.github.io/actisleep/reference/py_acti_sleeper.md)
+- [`py_acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/py_acti_sleeper.md)
   : Estimate sleep with sleeper in an isolated Python process
 

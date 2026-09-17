@@ -7,16 +7,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/jhuwit/actisleep/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/jhuwit/actisomni/blob/main/DESCRIPTION)
 
-Muschelli J (2026). *actisleep: Create Sleep Measures of Actigraphy and
+Muschelli J (2026). *actisomni: Create Sleep Measures of Actigraphy and
 Activity Analysis*. R package version 0.1.0,
-<https://jhuwit.github.io/actisleep/>.
+<https://jhuwit.github.io/actisomni/>.
 
     @Manual{,
-      title = {actisleep: Create Sleep Measures of Actigraphy and Activity Analysis},
+      title = {actisomni: Create Sleep Measures of Actigraphy and Activity Analysis},
       author = {John Muschelli},
       year = {2026},
       note = {R package version 0.1.0},
-      url = {https://jhuwit.github.io/actisleep/},
+      url = {https://jhuwit.github.io/actisomni/},
     }

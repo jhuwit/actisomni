@@ -4,7 +4,7 @@ For `"HDCZA"` and `"HorAngle"`, supply raw triaxial acceleration; the
 selected function derives a regular epoch-level posture angle. The
 remaining methods use regular epoch-level activity, SIB, or timestamp
 data. Use
-[`acti_sleep_guider_requirements()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_guider_requirements.md)
+[`acti_sleep_guider_requirements()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_guider_requirements.md)
 for a method-by-method summary.
 
 ## Usage

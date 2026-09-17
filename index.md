@@ -1,6 +1,6 @@
-# actisleep
+# actisomni
 
-`actisleep` estimates sleep from wrist-worn accelerometry. It provides
+`actisomni` estimates sleep from wrist-worn accelerometry. It provides
 sleep-period-time (SPT) guiders, sustained-inactivity-bout (SIB) labels,
 consensus sleep labels, diary helpers, and wrappers for the `asleep` and
 `sleeper` machine-learning models.
@@ -9,6 +9,12 @@ The guider functions identify a likely main sleep window. Combine one or
 more guiders with a SIB label when an epoch-level sleep/wake label is
 needed.
 
+## Why not `actisleep`?
+
+The original package name was `actisleep`, but that conflicted with a
+previous R package:
+<https://cran.r-project.org/web/packages/ActiSleep/index.html>.
+
 ## Installation
 
 Install the development version from GitHub:
@@ -16,7 +22,7 @@ Install the development version from GitHub:
 ``` r
 
 # install.packages("remotes")
-remotes::install_github("jhuwit/actisleep")
+remotes::install_github("jhuwit/actisomni")
 ```
 
 ## Sleep guiders and labels
@@ -27,7 +33,7 @@ epoch.
 
 ``` r
 
-library(actisleep)
+library(actisomni)
 
 time <- as.POSIXct("2020-01-01 18:00:00", tz = "UTC") + 0:1439 * 60
 epochs <- data.frame(
@@ -49,9 +55,9 @@ head(epochs)
 ```
 
 For raw X/Y/Z acceleration,
-[`acti_sleep_sib()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_sib.md)
+[`acti_sleep_sib()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_sib.md)
 calculates the van Hees SIB indicator and
-[`acti_sleep_ensemble()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_ensemble.md)
+[`acti_sleep_ensemble()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_ensemble.md)
 combines compatible guiders into a consensus label. The example
 recording supplied by `actiread` can be used directly:
 
@@ -90,9 +96,9 @@ sum(diary_window$window)
 ## Tudor–Locke sleep periods and metrics
 
 For labelled, one-minute epochs,
-[`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_tudor_locke.md)
+[`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_tudor_locke.md)
 delegates Tudor–Locke period detection and sleep metrics to
-`actigraph.sleepr`. It accepts the usual actisleep column names: `time`,
+`actigraph.sleepr`. It accepts the usual actisomni column names: `time`,
 an activity column, and a logical or sleep/wake `sleep` column.
 
 ``` r
@@ -128,9 +134,9 @@ cross midnight and span multiple days.
 
 ## Machine-learning model wrappers
 
-[`acti_asleep()`](https://jhuwit.github.io/actisleep/reference/acti_asleep.md)
+[`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
 and
-[`acti_sleeper()`](https://jhuwit.github.io/actisleep/reference/acti_sleeper.md)
+[`acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md)
 both require complete, strictly time-ordered raw triaxial data. They
 return the same columns: `time`, `sleep`, `sleep_probability`,
 `sleep_stage`, `nonwear`, and `method`.

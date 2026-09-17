@@ -3,7 +3,7 @@
 Uses
 [`asleep::py_asleep()`](https://jhuwit.github.io/asleep/reference/asleep.html)
 to run the same asleep model as
-[`acti_asleep()`](https://jhuwit.github.io/actisleep/reference/acti_asleep.md)
+[`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
 in a `callr` subprocess. This keeps Python package requirements separate
 from the current R session.
 
@@ -72,4 +72,4 @@ py_acti_asleep(
 ## Value
 
 An `acti_sleep_estimate` tibble; see
-[`acti_asleep()`](https://jhuwit.github.io/actisleep/reference/acti_asleep.md).
+[`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md).

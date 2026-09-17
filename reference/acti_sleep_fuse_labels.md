@@ -20,7 +20,7 @@ acti_sleep_fuse_labels(
 
   A data frame, matrix, or tibble of logical/binary sleep-label columns,
   such as the output of
-  [`acti_sleep_labels()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_labels.md).
+  [`acti_sleep_labels()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_labels.md).
 
 - threshold:
 

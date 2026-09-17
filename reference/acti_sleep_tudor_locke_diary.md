@@ -2,7 +2,7 @@
 
 Adds a logical sleep column to epoch data from diary onset and wakeup
 times. The resulting data can be passed directly to
-[`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_tudor_locke.md).
+[`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_tudor_locke.md).
 
 ## Usage
 

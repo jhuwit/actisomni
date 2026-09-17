@@ -41,7 +41,7 @@ acti_sleep_ensemble(
 - sib_method:
 
   SIB method, passed to
-  [`acti_sleep_sib()`](https://jhuwit.github.io/actisleep/reference/acti_sleep_sib.md).
+  [`acti_sleep_sib()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_sib.md).
 
 - fusion:
 
