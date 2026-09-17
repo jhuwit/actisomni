@@ -141,6 +141,7 @@ acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
     pytorch_device = match.arg(pytorch_device), sample_rate = sample_rate,
     verbose = verbose, force_download = force_download
   )
+  on.exit(cleanup_uv_lock_files(), add = TRUE)
   .acti_sleep_asleep_result(result)
 }
 
@@ -170,6 +171,7 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
     verbose = verbose, force_download = force_download,
     pyenv_function = pyenv_function, show = show
   )
+  on.exit(cleanup_uv_lock_files(), add = TRUE)
   .acti_sleep_asleep_result(result)
 }
 
@@ -205,6 +207,7 @@ acti_sleeper <- function(data, epoch = 30L, model_dir) {
   predictions <- sleeper::estimate_sleep(
     data = sleeper_data, epoch = as.integer(epoch), model_dir = model_dir
   )
+  on.exit(cleanup_uv_lock_files(), add = TRUE)
   .acti_sleep_sleeper_result(predictions)
 }
 
@@ -239,5 +242,6 @@ py_acti_sleeper <- function(data, epoch = 30L, model_dir,
     data = sleeper_data, epoch = as.integer(epoch), model_dir = model_dir,
     pyenv_function = pyenv_function, show = show
   )
+  on.exit(cleanup_uv_lock_files(), add = TRUE)
   .acti_sleep_sleeper_result(predictions)
 }
