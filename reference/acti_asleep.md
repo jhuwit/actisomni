@@ -18,6 +18,17 @@ acti_asleep(
   verbose = TRUE,
   force_download = FALSE
 )
+
+acti_calculate_asleep(
+  data,
+  min_wear_hours = 22L,
+  time_shift = "0",
+  report_light_and_temp = FALSE,
+  pytorch_device = c("cpu", "cuda:0"),
+  sample_rate = NULL,
+  verbose = TRUE,
+  force_download = FALSE
+)
 ```
 
 ## Arguments

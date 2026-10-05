@@ -3,6 +3,7 @@
 ## All functions
 
 - [`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
+  [`acti_calculate_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
   : Estimate sleep with the asleep model
 - [`acti_sleep_diary()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_diary.md)
   : Identify a diary-defined sleep window
