@@ -2,9 +2,21 @@
 % Please edit documentation in R/acti_sleep_models.R
 \name{acti_asleep}
 \alias{acti_asleep}
+\alias{acti_calculate_asleep}
 \title{Estimate sleep with the asleep model}
 \usage{
 acti_asleep(
+  data,
+  min_wear_hours = 22L,
+  time_shift = "0",
+  report_light_and_temp = FALSE,
+  pytorch_device = c("cpu", "cuda:0"),
+  sample_rate = NULL,
+  verbose = TRUE,
+  force_download = FALSE
+)
+
+acti_calculate_asleep(
   data,
   min_wear_hours = 22L,
   time_shift = "0",

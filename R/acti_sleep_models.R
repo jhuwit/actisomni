@@ -147,6 +147,10 @@ acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
   .acti_sleep_asleep_result(result)
 }
 
+#' @export
+#' @rdname acti_asleep
+acti_calculate_asleep = acti_asleep
+
 #' Estimate sleep with asleep in an isolated Python process
 #'
 #' Uses [asleep::py_asleep()] to run the same asleep model as
