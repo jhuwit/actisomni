@@ -13,6 +13,13 @@ acti_sleep_notworn(data, min_block_minutes = 30, max_gap_minutes = 60)
 
 \item{max_gap_minutes}{Maximum interruption bridged between blocks.}
 }
+\value{
+An \code{acti_sleep_guider} object. \code{window} marks the longest selected
+low-activity block, and \code{crude_window} marks all candidate blocks.
+\code{smoothed_activity} contains five-minute rolling activity values,
+\code{low_activity} flags candidate epochs, and \code{threshold} is the activity
+cutoff used to identify them.
+}
 \description{
 Identify a low-activity window for no-night-wear protocols
 }

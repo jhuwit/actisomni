@@ -9,6 +9,11 @@ acti_sleep_hlrb(data)
 \arguments{
 \item{data}{A data frame of regular epochs.}
 }
+\value{
+An \code{acti_sleep_guider} object. \code{window} marks the longest selected
+rest bout, \code{crude_window} marks all bouts before selection, and
+\code{smoothed_sib} is the logical SIB classification after two-hour smoothing.
+}
 \description{
 Identify the longest rest bout from sustained inactivity bouts
 }

@@ -13,6 +13,11 @@ acti_sleep_l5(data, l5_hours = 5, window_hours = 12)
 
 \item{window_hours}{Duration of the guider centred on L5.}
 }
+\value{
+An \code{acti_sleep_guider} object. \code{window} marks the window centred on
+the least-active period; \code{l5_start_index} and \code{l5_activity_sum} identify
+that period's starting epoch and total activity.
+}
 \description{
 Identify a sleep window from the least-active five hours
 }

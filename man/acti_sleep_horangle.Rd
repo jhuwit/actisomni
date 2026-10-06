@@ -32,6 +32,12 @@ use \code{NA} to treat them as no movement.}
 
 \item{max_gap_minutes}{Maximum interruption bridged between blocks.}
 }
+\value{
+An \code{acti_sleep_guider} object. \code{window} marks the longest selected
+horizontal-posture block, and \code{crude_window} marks all candidate blocks.
+\code{horizontal} is the epoch-level posture flag, \code{threshold} is the angle
+limit, and \code{epoch_data} contains the averaged angle and invalid flag.
+}
 \description{
 Identify a sleep window from horizontal posture
 }

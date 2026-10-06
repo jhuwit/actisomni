@@ -263,6 +263,10 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
 #' horizontal <- acti_sleep_horangle(raw, epoch = "5 seconds")
 #' }
 #' @export
+#' @return An `acti_sleep_guider` object. `window` marks the longest selected
+#'   horizontal-posture block, and `crude_window` marks all candidate blocks.
+#'   `horizontal` is the epoch-level posture flag, `threshold` is the angle
+#'   limit, and `epoch_data` contains the averaged angle and invalid flag.
 acti_sleep_horangle <- function(data, epoch = "5 seconds", longitudinal_axis = "Z",
                                 horizontal_threshold = 45, ignore_invalid = FALSE,
                                 min_block_minutes = 30, max_gap_minutes = 60) {
@@ -312,6 +316,9 @@ acti_sleep_horangle <- function(data, epoch = "5 seconds", longitudinal_axis = "
 #' data$time <- data$time[1] + (seq_len(nrow(data)) - 1) * 60
 #' l5 <- acti_sleep_l5(data)
 #' @export
+#' @return An `acti_sleep_guider` object. `window` marks the window centred on
+#'   the least-active period; `l5_start_index` and `l5_activity_sum` identify
+#'   that period's starting epoch and total activity.
 acti_sleep_l5 <- function(data, l5_hours = 5, window_hours = 12) {
   epoch_data <- .acti_sleep_activity_data(data)
   time <- epoch_data$time
@@ -380,6 +387,9 @@ acti_sleep_setwindow <- function(data, start_hour = 22, end_hour = 8) {
 #' data$sib <- data$counts == 0
 #' longest_rest <- acti_sleep_hlrb(data)
 #' @export
+#' @return An `acti_sleep_guider` object. `window` marks the longest selected
+#'   rest bout, `crude_window` marks all bouts before selection, and
+#'   `smoothed_sib` is the logical SIB classification after two-hour smoothing.
 acti_sleep_hlrb <- function(data) {
   data <- .acti_sleep_epoch_data(data, "sib")
   epoch_data <- data |>
@@ -420,6 +430,11 @@ acti_sleep_hlrb <- function(data) {
 #' # `counts` is an epoch-level activity metric.
 #' no_night_wear <- acti_sleep_notworn(data)
 #' @export
+#' @return An `acti_sleep_guider` object. `window` marks the longest selected
+#'   low-activity block, and `crude_window` marks all candidate blocks.
+#'   `smoothed_activity` contains five-minute rolling activity values,
+#'   `low_activity` flags candidate epochs, and `threshold` is the activity
+#'   cutoff used to identify them.
 acti_sleep_notworn <- function(data, min_block_minutes = 30,
                                max_gap_minutes = 60) {
   epoch_data <- .acti_sleep_activity_data(data)
@@ -896,4 +911,3 @@ acti_sleep_ensemble <- function(data, guiders = NULL, epoch = "5 seconds",
   list(epoch_data = epoch_data, guiders = guider_objects, labels = labels,
        fused = fused, label_data = label_data, fusion = fusion)
 }
-
