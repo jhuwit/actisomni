@@ -22,6 +22,14 @@ acti_sleep_notworn(data, min_block_minutes = 30, max_gap_minutes = 60)
 
   Maximum interruption bridged between blocks.
 
+## Value
+
+An `acti_sleep_guider` object. `window` marks the longest selected
+low-activity block, and `crude_window` marks all candidate blocks.
+`smoothed_activity` contains five-minute rolling activity values,
+`low_activity` flags candidate epochs, and `threshold` is the activity
+cutoff used to identify them.
+
 ## Examples
 
 ``` r

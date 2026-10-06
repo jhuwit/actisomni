@@ -14,6 +14,13 @@ acti_sleep_hlrb(data)
 
   A data frame of regular epochs.
 
+## Value
+
+An `acti_sleep_guider` object. `window` marks the longest selected rest
+bout, `crude_window` marks all bouts before selection, and
+`smoothed_sib` is the logical SIB classification after two-hour
+smoothing.
+
 ## Examples
 
 ``` r

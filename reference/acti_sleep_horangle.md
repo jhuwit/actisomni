@@ -48,6 +48,13 @@ acti_sleep_horangle(
 
   Maximum interruption bridged between blocks.
 
+## Value
+
+An `acti_sleep_guider` object. `window` marks the longest selected
+horizontal-posture block, and `crude_window` marks all candidate blocks.
+`horizontal` is the epoch-level posture flag, `threshold` is the angle
+limit, and `epoch_data` contains the averaged angle and invalid flag.
+
 ## Examples
 
 ``` r
