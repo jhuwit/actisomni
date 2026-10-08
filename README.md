@@ -147,3 +147,8 @@ their directory as `model_dir`.
 asleep_estimate <- acti_asleep(raw, verbose = FALSE)
 sleeper_estimate <- acti_sleeper(raw, model_dir = "path/to/sleeper-models")
 ```
+
+## Funding
+
+This work was supported by NIH P30AG021334 and the Johns Hopkins Older
+Americans Independence Center (OAIC) Pepper Center grant.
