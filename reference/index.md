@@ -33,10 +33,6 @@
   : Identify a fixed daily sleep window
 - [`acti_sleep_sib()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_sib.md)
   : Detect sustained inactivity bouts (SIBs)
-- [`acti_sleep_tudor_locke()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_tudor_locke.md)
-  : Summarize sleep periods with Tudor–Locke
-- [`acti_sleep_tudor_locke_diary()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_tudor_locke_diary.md)
-  : Apply a sleep diary to epoch data for Tudor–Locke
 - [`acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md)
   : Estimate sleep with the sleeper model
 - [`py_acti_asleep()`](https://jhuwit.github.io/actisomni/reference/py_acti_asleep.md)
