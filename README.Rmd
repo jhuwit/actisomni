@@ -88,36 +88,6 @@ diary_window <- acti_sleep_diary(
 sum(diary_window$window)
 ```
 
-## Tudor--Locke sleep periods and metrics
-
-For labelled, one-minute epochs, `acti_sleep_tudor_locke()` delegates
-Tudor--Locke period detection and sleep metrics to `actigraph.sleepr`. It
-accepts the usual actisomni column names: `time`, an activity column, and a
-logical or sleep/wake `sleep` column.
-
-```{r tudor-locke-example}
-sleep_diary <- data.frame(
-  night = 1:2,
-  onset = as.POSIXct(c("2020-01-03 22:30:00", "2020-01-04 22:45:00"), tz = "UTC"),
-  wakeup = as.POSIXct(c("2020-01-04 06:15:00", "2020-01-05 06:30:00"), tz = "UTC")
-)
-sleep_diary
-
-tudor_epochs <- acti_sleep_tudor_locke_diary(
-  data.frame(
-    time = as.POSIXct("2020-01-03 22:00:00", tz = "UTC") + 0:539 * 60,
-    activity = 0
-  ),
-  sleep_diary = sleep_diary
-)
-tudor_locke <- acti_sleep_tudor_locke(tudor_epochs)
-tudor_locke[c("onset", "out_bed_time", "total_sleep_time", "efficiency")]
-```
-
-Run the diary helper separately for each person. A diary is one row per sleep
-interval, with POSIXct `onset` and `wakeup` columns; intervals can cross
-midnight and span multiple days.
-
 ## Machine-learning model wrappers
 
 `acti_asleep()` and `acti_sleeper()` both require complete,

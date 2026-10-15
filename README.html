@@ -673,40 +673,6 @@ and wake times. Times are inclusive at both endpoints.</p>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>)</span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">sum</span>(diary_window<span class="sc">$</span>window)</span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; [1] 481</span></span></code></pre></div>
-<h2 id="tudorlocke-sleep-periods-and-metrics">Tudor–Locke sleep periods
-and metrics</h2>
-<p>For labelled, one-minute epochs,
-<code>acti_sleep_tudor_locke()</code> delegates Tudor–Locke period
-detection and sleep metrics to <code>actigraph.sleepr</code>. It accepts
-the usual actisomni column names: <code>time</code>, an activity column,
-and a logical or sleep/wake <code>sleep</code> column.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>sleep_diary <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">night =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">onset =</span> <span class="fu">as.POSIXct</span>(<span class="fu">c</span>(<span class="st">&quot;2020-01-03 22:30:00&quot;</span>, <span class="st">&quot;2020-01-04 22:45:00&quot;</span>), <span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>),</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">wakeup =</span> <span class="fu">as.POSIXct</span>(<span class="fu">c</span>(<span class="st">&quot;2020-01-04 06:15:00&quot;</span>, <span class="st">&quot;2020-01-05 06:30:00&quot;</span>), <span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>)</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>sleep_diary</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;   night               onset              wakeup</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; 1     1 2020-01-03 22:30:00 2020-01-04 06:15:00</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 2     2 2020-01-04 22:45:00 2020-01-05 06:30:00</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>tudor_epochs <span class="ot">&lt;-</span> <span class="fu">acti_sleep_tudor_locke_diary</span>(</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="at">time =</span> <span class="fu">as.POSIXct</span>(<span class="st">&quot;2020-01-03 22:00:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>) <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">539</span> <span class="sc">*</span> <span class="dv">60</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="at">activity =</span> <span class="dv">0</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  ),</span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">sleep_diary =</span> sleep_diary</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>)</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>tudor_locke <span class="ot">&lt;-</span> <span class="fu">acti_sleep_tudor_locke</span>(tudor_epochs)</span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>tudor_locke[<span class="fu">c</span>(<span class="st">&quot;onset&quot;</span>, <span class="st">&quot;out_bed_time&quot;</span>, <span class="st">&quot;total_sleep_time&quot;</span>, <span class="st">&quot;efficiency&quot;</span>)]</span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 4</span></span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt;   onset               out_bed_time        total_sleep_time efficiency</span></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt;   &lt;dttm&gt;              &lt;dttm&gt;                         &lt;int&gt;      &lt;dbl&gt;</span></span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; 1 2020-01-03 22:30:00 2020-01-04 06:15:00              465        100</span></span></code></pre></div>
-<p>Run the diary helper separately for each person. A diary is one row
-per sleep interval, with POSIXct <code>onset</code> and
-<code>wakeup</code> columns; intervals can cross midnight and span
-multiple days.</p>
 <h2 id="machine-learning-model-wrappers">Machine-learning model
 wrappers</h2>
 <p><code>acti_asleep()</code> and <code>acti_sleeper()</code> both
