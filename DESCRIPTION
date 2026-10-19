@@ -47,7 +47,7 @@ Imports:
     tibble,
     stats,
     asleep,
-    sleeper,
+    sleeper
 Config/roxygen2/version: 8.0.0
 URL: https://jhuwit.github.io/actisomni/
 BugReports: https://github.com/jhuwit/actisomni/issues
