@@ -41,15 +41,23 @@ a readable accelerometry file path. File paths are passed unchanged to
 
 \item{show}{Whether to stream subprocess output.}
 
-\item{tz}{Time zone of the returned times. \code{asleep} reports local clock
-times without a time zone; by default they are given the time zone of
-\code{data$time} (so they line up with the input), or \code{"UTC"} when \code{data} is a
-file path. Set \code{tz} to the recording's time zone for file input.
-Clock times repeated by an autumn daylight-saving transition are resolved
-by prediction order: the first occurrence takes the earlier instant and
-the second the later one. Clock times skipped by a spring transition
-cover no observations and are dropped. The same rule applies to file
-input; an error is raised if predictions are not in time order.}
+\item{tz}{Time zone of the recording and the returned times. By default
+the time zone of \code{data$time}, or \code{"UTC"} when \code{data} is a file path; set
+it to the recording's time zone for file input. \code{asleep} works on local
+clock times without a time zone and splits the recording into
+noon-to-noon days on that clock.
+
+For data-frame input, the clock passed to \code{asleep} is held at the UTC
+offset in effect at the start of the recording, as a device clock is, so
+it never repeats or skips an hour at a daylight-saving transition. The
+returned times are the exact instants of the input, shown in \code{tz}.
+
+For file input, the device clock times that \code{asleep} reports are taken as
+clock times in \code{tz}. File and data-frame input of the same recording can
+therefore differ after a daylight-saving transition: a device clock that
+does not change for daylight saving is an hour off from \code{tz} until the
+clocks change back. This difference is known. To match such a device
+clock, use a fixed-offset time zone, e.g. \code{tz = "Etc/GMT-1"} for UTC+1.}
 }
 \value{
 An \code{acti_sleep_estimate} tibble; see \code{\link[=acti_asleep]{acti_asleep()}}.

@@ -61,18 +61,20 @@
   lubridate::ymd_hms(as.character(x), tz = "UTC", quiet = TRUE)
 }
 
-# Convert naive local clock labels, in time order, to instants in `tz`. At an
-# autumn daylight-saving transition a label occurs twice; a label at or before
-# one already seen is its second (later) occurrence. Labels in a spring gap
-# name no instant and are returned as NA.
-.acti_sleep_local_time <- function(x, tz) {
-  clock <- .acti_sleep_model_time(x)
-  time <- lubridate::force_tz(clock, tz, roll_dst = c("NA", "pre"))
-  later <- lubridate::force_tz(clock, tz, roll_dst = c("NA", "post"))
-  seen <- c(-Inf, cummax(as.numeric(clock))[-length(clock)])
-  repeated <- as.numeric(clock) <= seen
-  time[repeated] <- later[repeated]
-  time
+# Seconds that clock time in `tz` is ahead of UTC at `time`.
+.acti_sleep_clock_offset <- function(time, tz) {
+  as.numeric(lubridate::force_tz(lubridate::with_tz(time, tz), "UTC")) -
+    as.numeric(time)
+}
+
+# asleep works on naive local clock times. For data-frame input, hold the clock
+# at the UTC offset at the start of the recording, as a device clock is, so it
+# never repeats or skips an hour at a daylight-saving transition.
+.acti_sleep_fixed_clock <- function(data, tz) {
+  offset <- .acti_sleep_clock_offset(data$time[1L], tz)
+  data$time <- lubridate::with_tz(data$time, "UTC") + offset
+  attr(data$time, "tzone") <- "UTC"
+  list(data = data, offset = offset)
 }
 
 .acti_sleep_model_result <- function(time, sleep, method,
@@ -105,28 +107,21 @@
   )
 }
 
-.acti_sleep_asleep_result <- function(result, tz = "UTC") {
+.acti_sleep_asleep_result <- function(result, tz = "UTC", offset = NULL) {
   assertthat::assert_that(
     !is.null(result), is.data.frame(result$predictions),
     all(c("time", "sleep_wake") %in% names(result$predictions)),
     msg = "`asleep` did not return a predictions data frame with `time` and `sleep_wake`."
   )
   predictions <- result$predictions
-  assertthat::assert_that(
-    !anyNA(.acti_sleep_model_time(predictions$time)),
-    msg = "`asleep` returned missing or unparseable prediction times."
-  )
-  # Relabel (not convert) the naive clock times to the input time zone.
-  # Labels skipped by a spring transition cover no observations.
-  time <- .acti_sleep_local_time(predictions$time, tz)
-  predictions <- predictions[!is.na(time), , drop = FALSE]
-  time <- time[!is.na(time)]
-  assertthat::assert_that(
-    all(diff(as.numeric(time)) > 0),
-    msg = paste0("`asleep` prediction times are not increasing in time zone ",
-                 "\"", tz, "\"; repeated daylight-saving clock times can ",
-                 "only be resolved when predictions are in time order.")
-  )
+  clock <- lubridate::force_tz(.acti_sleep_model_time(predictions$time), "UTC")
+  time <- if (is.null(offset)) {
+    # File input: relabel (not convert) the device clock times to `tz`
+    lubridate::force_tz(clock, tz)
+  } else {
+    # Data-frame input: undo the fixed offset applied to the input clock
+    lubridate::with_tz(clock - offset, tz)
+  }
   sleep_wake <- tolower(trimws(as.character(predictions$sleep_wake)))
   .acti_sleep_model_result(
     time = time,
@@ -169,15 +164,23 @@
 #' @param sample_rate Optional input sample rate.
 #' @param verbose Whether `asleep` prints progress messages.
 #' @param force_download Whether to re-download `asleep` model files.
-#' @param tz Time zone of the returned times. `asleep` reports local clock
-#'   times without a time zone; by default they are given the time zone of
-#'   `data$time` (so they line up with the input), or `"UTC"` when `data` is a
-#'   file path. Set `tz` to the recording's time zone for file input.
-#'   Clock times repeated by an autumn daylight-saving transition are resolved
-#'   by prediction order: the first occurrence takes the earlier instant and
-#'   the second the later one. Clock times skipped by a spring transition
-#'   cover no observations and are dropped. The same rule applies to file
-#'   input; an error is raised if predictions are not in time order.
+#' @param tz Time zone of the recording and the returned times. By default
+#'   the time zone of `data$time`, or `"UTC"` when `data` is a file path; set
+#'   it to the recording's time zone for file input. `asleep` works on local
+#'   clock times without a time zone and splits the recording into
+#'   noon-to-noon days on that clock.
+#'
+#'   For data-frame input, the clock passed to `asleep` is held at the UTC
+#'   offset in effect at the start of the recording, as a device clock is, so
+#'   it never repeats or skips an hour at a daylight-saving transition. The
+#'   returned times are the exact instants of the input, shown in `tz`.
+#'
+#'   For file input, the device clock times that `asleep` reports are taken as
+#'   clock times in `tz`. File and data-frame input of the same recording can
+#'   therefore differ after a daylight-saving transition: a device clock that
+#'   does not change for daylight saving is an hour off from `tz` until the
+#'   clocks change back. This difference is known. To match such a device
+#'   clock, use a fixed-offset time zone, e.g. `tz = "Etc/GMT-1"` for UTC+1.
 #' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
 #'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. The asleep
 #'   backend currently does not return probabilities, so `sleep_probability` is
@@ -190,6 +193,12 @@ acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
                               force_download = FALSE, tz = NULL) {
   data <- .acti_sleep_asleep_input(data)
   tz <- .acti_sleep_input_tz(data, tz)
+  offset <- NULL
+  if (is.data.frame(data)) {
+    clock <- .acti_sleep_fixed_clock(data, tz)
+    data <- clock$data
+    offset <- clock$offset
+  }
   result <- asleep::asleep(
     file = data, min_wear_hours = min_wear_hours, time_shift = time_shift,
     report_light_and_temp = report_light_and_temp,
@@ -199,7 +208,7 @@ acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
   if (Sys.getenv("NOT_CRAN") != "true") {
     on.exit(cleanup_uv_lock_files(), add = TRUE)
   }
-  .acti_sleep_asleep_result(result, tz = tz)
+  .acti_sleep_asleep_result(result, tz = tz, offset = offset)
 }
 
 #' @export
@@ -226,6 +235,12 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
                            show = FALSE, tz = NULL) {
   data <- .acti_sleep_asleep_input(data)
   tz <- .acti_sleep_input_tz(data, tz)
+  offset <- NULL
+  if (is.data.frame(data)) {
+    clock <- .acti_sleep_fixed_clock(data, tz)
+    data <- clock$data
+    offset <- clock$offset
+  }
   result <- asleep::py_asleep(
     file = data, min_wear_hours = min_wear_hours, time_shift = time_shift,
     report_light_and_temp = report_light_and_temp,
@@ -236,7 +251,7 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
   if (Sys.getenv("NOT_CRAN") != "true") {
     on.exit(cleanup_uv_lock_files(), add = TRUE)
   }
-  .acti_sleep_asleep_result(result, tz = tz)
+  .acti_sleep_asleep_result(result, tz = tz, offset = offset)
 }
 
 #' Estimate sleep with the sleeper model

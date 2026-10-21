@@ -37,29 +37,33 @@ test_that("acti_asleep passes a readable file path through unchanged", {
   expect_true(out$sleep)
 })
 
-test_that("acti_asleep returns times in the input time zone", {
-  data <- data.frame(
-    time = as.POSIXct("2013-06-10 19:30:00", tz = "Europe/London") + 0:2,
-    X = c(0, 0.1, 0.2), Y = c(0, 0.1, 0.2), Z = c(1, 1, 1)
-  )
+# Mock asleep: one prediction per input row, labelled with the naive clock
+# times asleep writes to CSV
+local_asleep_echo <- function(env = parent.frame()) {
   testthat::local_mocked_bindings(
-    # asleep reports naive local clock times
     asleep = function(file, ...) {
       list(predictions = data.frame(
-        time = c("2013-06-10 19:30:00", "2013-06-10 19:30:30"),
-        sleep_wake = c("wake", "sleep")
+        time = format(file$time, "%Y-%m-%d %H:%M:%S"), sleep_wake = "sleep"
       ))
     },
-    .package = "asleep"
+    .package = "asleep", .env = env
   )
+}
+
+test_that("acti_asleep returns times in the input time zone", {
+  data <- data.frame(
+    time = as.POSIXct("2013-06-10 19:30:00", tz = "Europe/London") + 0:2 * 30,
+    X = c(0, 0.1, 0.2), Y = c(0, 0.1, 0.2), Z = c(1, 1, 1)
+  )
+  local_asleep_echo()
 
   out <- acti_asleep(data, verbose = FALSE)
   expect_equal(attr(out$time, "tzone"), "Europe/London")
-  expect_equal(out$time[1], data$time[1])
+  expect_equal(out$time, data$time)
 
   out <- acti_asleep(data, verbose = FALSE, tz = "UTC")
   expect_equal(attr(out$time, "tzone"), "UTC")
-  expect_equal(format(out$time[1]), "2013-06-10 19:30:00")
+  expect_equal(out$time, lubridate::with_tz(data$time, "UTC"))
 })
 
 test_that("acti_asleep uses tz for file input", {
@@ -78,59 +82,63 @@ test_that("acti_asleep uses tz for file input", {
                as.POSIXct("2013-06-10 19:30:00", tz = "Europe/London"))
 })
 
-test_that("acti_asleep resolves repeated clock times at a DST transition", {
-  # London clocks go back at 02:00 BST on 2023-10-29, repeating 01:00--02:00
-  data <- data.frame(
-    time = as.POSIXct("2023-10-29 00:00:00", tz = "UTC") + 0:3 * 1800,
-    X = 0, Y = 0, Z = 1
-  )
-  data$time <- lubridate::with_tz(data$time, "Europe/London")
-  labels <- format(data$time, "%Y-%m-%d %H:%M:%S")
-  expect_equal(labels[2], labels[4])
-  testthat::local_mocked_bindings(
-    asleep = function(file, ...) {
-      list(predictions = data.frame(time = labels, sleep_wake = "sleep"))
-    },
-    .package = "asleep"
-  )
-  out <- acti_asleep(data, verbose = FALSE)
-  expect_equal(out$time, data$time)
-
-  # The same order rule applies to file input with an explicit time zone
-  path <- tempfile(fileext = ".bin")
-  file.create(path)
-  out <- acti_asleep(path, verbose = FALSE, tz = "Europe/London")
-  expect_equal(out$time, data$time)
-
-  # Out-of-order labels cannot be resolved
-  testthat::local_mocked_bindings(
-    asleep = function(file, ...) {
-      list(predictions = data.frame(time = rev(labels), sleep_wake = "sleep"))
-    },
-    .package = "asleep"
-  )
-  expect_error(acti_asleep(data, verbose = FALSE), "time order")
+test_that("acti_asleep holds a fixed clock across DST transitions", {
+  # London clocks go back at 02:00 BST on 2023-10-29 and forward at 01:00 GMT
+  # on 2023-03-26
+  for (start in c("2023-10-29 00:00:00", "2023-03-26 00:00:00")) {
+    data <- data.frame(
+      time = as.POSIXct(start, tz = "Europe/London") + 0:7 * 1800,
+      X = 0, Y = 0, Z = 1
+    )
+    seen <- NULL
+    testthat::local_mocked_bindings(
+      asleep = function(file, ...) {
+        seen <<- file$time
+        list(predictions = data.frame(
+          time = format(file$time, "%Y-%m-%d %H:%M:%S"), sleep_wake = "sleep"
+        ))
+      },
+      .package = "asleep"
+    )
+    out <- acti_asleep(data, verbose = FALSE)
+    # The clock asleep sees starts at local time and never repeats or skips
+    expect_equal(format(seen[1]), format(data$time[1]))
+    expect_equal(diff(as.numeric(seen)), rep(1800, 7))
+    expect_equal(out$time, data$time)
+  }
 })
 
-test_that("acti_asleep drops clock times skipped at a DST transition", {
-  # London clocks go forward at 01:00 GMT on 2023-03-26, skipping 01:00--02:00
+test_that("file and data-frame input differ after a DST transition", {
+  # Known difference: a device clock that stays on BST through the autumn
+  # transition is read as Europe/London clock time for file input, so file
+  # times from its 01:00 BST (ambiguous in London, read as the later GMT
+  # occurrence) are an hour late; data-frame times are exact.
   data <- data.frame(
-    time = as.POSIXct("2023-03-26 00:00:00", tz = "Europe/London") + 0:2 * 1800,
+    time = as.POSIXct("2023-10-29 00:00:00", tz = "Europe/London") + 0:7 * 1800,
     X = 0, Y = 0, Z = 1
   )
+  device_clock <- format(lubridate::with_tz(data$time, "Etc/GMT-1"),
+                         "%Y-%m-%d %H:%M:%S")
   testthat::local_mocked_bindings(
     asleep = function(file, ...) {
-      list(predictions = data.frame(
-        time = c("2023-03-26 00:00:00", "2023-03-26 00:30:00",
-                 "2023-03-26 01:30:00", "2023-03-26 02:00:00"),
-        sleep_wake = c("wake", "sleep", "sleep", "wake")
-      ))
+      list(predictions = data.frame(time = device_clock, sleep_wake = "sleep"))
     },
     .package = "asleep"
   )
-  out <- acti_asleep(data, verbose = FALSE)
-  expect_equal(out$time, data$time)
-  expect_equal(out$sleep, c(FALSE, TRUE, FALSE))
+  path <- tempfile(fileext = ".bin")
+  file.create(path)
+
+  from_data <- acti_asleep(data, verbose = FALSE)
+  from_file <- acti_asleep(path, verbose = FALSE, tz = "Europe/London")
+  expect_equal(from_data$time, data$time)
+  after <- data$time >= as.POSIXct("2023-10-29 00:00:00", tz = "UTC")
+  expect_equal(from_file$time[!after], data$time[!after])
+  expect_equal(as.numeric(from_file$time[after] - data$time[after],
+                          units = "hours"), rep(1, sum(after)))
+
+  # A fixed-offset time zone matching the device clock gives exact times
+  from_file <- acti_asleep(path, verbose = FALSE, tz = "Etc/GMT-1")
+  expect_equal(as.numeric(from_file$time), as.numeric(data$time))
 })
 
 test_that("acti_sleeper supplies required input and harmonizes predictions", {
