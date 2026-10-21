@@ -13,7 +13,8 @@ acti_asleep(
   pytorch_device = c("cpu", "cuda:0"),
   sample_rate = NULL,
   verbose = TRUE,
-  force_download = FALSE
+  force_download = FALSE,
+  tz = NULL
 )
 
 acti_calculate_asleep(
@@ -24,7 +25,8 @@ acti_calculate_asleep(
   pytorch_device = c("cpu", "cuda:0"),
   sample_rate = NULL,
   verbose = TRUE,
-  force_download = FALSE
+  force_download = FALSE,
+  tz = NULL
 )
 }
 \arguments{
@@ -45,6 +47,24 @@ a readable accelerometry file path. File paths are passed unchanged to
 \item{verbose}{Whether \code{asleep} prints progress messages.}
 
 \item{force_download}{Whether to re-download \code{asleep} model files.}
+
+\item{tz}{Time zone of the recording and the returned times. By default
+the time zone of \code{data$time}, or \code{"UTC"} when \code{data} is a file path; set
+it to the recording's time zone for file input. \code{asleep} works on local
+clock times without a time zone and splits the recording into
+noon-to-noon days on that clock.
+
+For data-frame input, the clock passed to \code{asleep} is held at the UTC
+offset in effect at the start of the recording, as a device clock is, so
+it never repeats or skips an hour at a daylight-saving transition. The
+returned times are the exact instants of the input, shown in \code{tz}.
+
+For file input, the device clock times that \code{asleep} reports are taken as
+clock times in \code{tz}. File and data-frame input of the same recording can
+therefore differ after a daylight-saving transition: a device clock that
+does not change for daylight saving is an hour off from \code{tz} until the
+clocks change back. This difference is known. To match such a device
+clock, use a fixed-offset time zone, e.g. \code{tz = "Etc/GMT-1"} for UTC+1.}
 }
 \value{
 An \code{acti_sleep_estimate} tibble with \code{time}, \code{sleep},
