@@ -53,6 +53,18 @@ test_that("HDCZA derives its default threshold from the recording", {
   )
 })
 
+test_that("HDCZA rejects epochs too coarse for a five-minute window", {
+  angle <- rep(40, 288)
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + seq_along(angle) * 300,
+    X = 1, Y = 0, Z = tan(angle * pi / 180)
+  )
+  expect_error(acti_sleep_hdcza(data, epoch = "5 minutes"),
+               "at least two angles")
+  expect_error(acti_sleep_hdcza(data, epoch = "5 minutes", threshold = 0.2),
+               "at least two angles")
+})
+
 test_that("HDCZA default matches GGIR's HASPT default", {
   skip_if_not_installed("GGIR")
   set.seed(2)

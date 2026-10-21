@@ -180,7 +180,8 @@
 #'
 #' @param data A data frame of raw accelerometer observations.
 #' @param epoch Epoch used to average raw angles, passed to
-#'   [lubridate::floor_date()].
+#'   [lubridate::floor_date()]. Must be at most 200 seconds so that each
+#'   five-minute window holds at least two angles.
 #' @param threshold Fixed maximum five-minute rolling median absolute angle
 #'   change, in degrees. The default, `NULL`, derives the threshold from the
 #'   recording using `threshold_percentile` and `threshold_multiplier`.
@@ -258,6 +259,11 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = NULL,
   )
 
   width <- max(1L, round(5 * 60 / epoch_seconds))
+  assertthat::assert_that(
+    width >= 2L,
+    msg = paste0("HDCZA needs at least two angles per five-minute window; ",
+                 "use an `epoch` of at most 200 seconds (e.g. \"5 seconds\").")
+  )
   # As in GGIR: the median absolute angle change within each centred
   # five-minute window of angles
   rolling_change <- .acti_sleep_roll_apply(
@@ -297,6 +303,8 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = NULL,
 #' Identify a sleep window from horizontal posture
 #'
 #' @inheritParams acti_sleep_hdcza
+#' @param epoch Epoch used to average raw angles, passed to
+#'   [lubridate::floor_date()].
 #' @param horizontal_threshold Absolute-angle limit defining horizontal posture.
 #' @param longitudinal_axis Raw axis used as the longitudinal axis: `"X"`,
 #'   `"Y"`, or `"Z"`.
