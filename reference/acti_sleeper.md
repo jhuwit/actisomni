@@ -20,7 +20,8 @@ acti_sleeper(data, epoch = 30L, model_dir)
 
 - epoch:
 
-  Output epoch in seconds.
+  Output epoch, in whole seconds or a string such as `"30 seconds"`; see
+  `actibase::acti_standardize_epoch()`.
 
 - model_dir:
 

@@ -24,8 +24,8 @@ acti_sleep_horangle(
 
 - epoch:
 
-  Epoch used to average raw angles, passed to
-  [`lubridate::floor_date()`](https://lubridate.tidyverse.org/reference/round_date.html).
+  Epoch used to average raw angles, in seconds or a string such as
+  `"5 seconds"`; see `actibase::acti_standardize_epoch()`.
 
 - longitudinal_axis:
 
@@ -61,5 +61,6 @@ limit, and `epoch_data` contains the averaged angle and invalid flag.
 # \donttest{
 raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 horizontal <- acti_sleep_horangle(raw, epoch = "5 seconds")
+#> Error: 'acti_standardize_epoch' is not an exported object from 'namespace:actibase'
 # }
 ```

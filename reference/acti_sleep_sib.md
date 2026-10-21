@@ -32,7 +32,8 @@ acti_sleep_sib(
 
 - epoch:
 
-  Raw-data aggregation epoch.
+  Raw-data aggregation epoch, in seconds or a string such as
+  `"5 seconds"`; see `actibase::acti_standardize_epoch()`.
 
 - time_threshold_minutes, angle_threshold:
 
@@ -52,5 +53,6 @@ A tibble with `time`, `sib`, and supporting epoch-level variables.
 # \donttest{
 raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 sib <- acti_sleep_sib(raw)
+#> Error: 'acti_standardize_epoch' is not an exported object from 'namespace:actibase'
 # }
 ```

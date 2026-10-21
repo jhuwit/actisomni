@@ -3,6 +3,7 @@
 ## Authors
 
 - **John Muschelli**. Author, maintainer.
+  [](https://orcid.org/0000-0001-6469-1750)
 
 ## Citation
 
@@ -11,12 +12,12 @@ Source:
 
 Muschelli J (2026). *actisomni: Create Sleep Measures of Actigraphy and
 Activity Analysis*. R package version 0.2.0,
-<https://jhuwit.github.io/actisomni/>.
+<https://github.com/jhuwit/actisomni>.
 
     @Manual{,
       title = {actisomni: Create Sleep Measures of Actigraphy and Activity Analysis},
       author = {John Muschelli},
       year = {2026},
       note = {R package version 0.2.0},
-      url = {https://jhuwit.github.io/actisomni/},
+      url = {https://github.com/jhuwit/actisomni},
     }
