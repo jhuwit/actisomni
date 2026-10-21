@@ -23,6 +23,7 @@
 * `epoch` arguments (guiders, `acti_sleep_sib()`, `acti_sleep_ensemble()`,
   `acti_sleeper()`) accept numeric seconds or strings such as `"30 seconds"`,
   standardized with `actibase::acti_standardize_epoch()`.
+* Requires actibase (>= 0.8.0) for `acti_standardize_epoch()`.
 
 # actisomni 0.2.0
 
