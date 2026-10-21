@@ -7,7 +7,9 @@
 acti_sleep_hdcza(
   data,
   epoch = "5 seconds",
-  threshold = 0.2,
+  threshold = NULL,
+  threshold_percentile = 10,
+  threshold_multiplier = 15,
   ignore_invalid = FALSE,
   min_block_minutes = 30,
   max_gap_minutes = 60
@@ -17,9 +19,19 @@ acti_sleep_hdcza(
 \item{data}{A data frame of raw accelerometer observations.}
 
 \item{epoch}{Epoch used to average raw angles, passed to
-\code{\link[lubridate:floor_date]{lubridate::floor_date()}}.}
+\code{\link[lubridate:floor_date]{lubridate::floor_date()}}. Must be at most 200 seconds so that each
+five-minute window holds at least two angles.}
 
-\item{threshold}{Maximum five-minute rolling median absolute angle change.}
+\item{threshold}{Fixed maximum five-minute rolling median absolute angle
+change, in degrees. The default, \code{NULL}, derives the threshold from the
+recording using \code{threshold_percentile} and \code{threshold_multiplier}.}
+
+\item{threshold_percentile}{Percentile, between 1 and 100, of the rolling
+median absolute angle change used for the data-driven threshold. Ignored
+when \code{threshold} is set.}
+
+\item{threshold_multiplier}{Positive multiplier applied to that percentile
+for the data-driven threshold. Ignored when \code{threshold} is set.}
 
 \item{ignore_invalid}{Whether invalid observations are treated as movement;
 use \code{NA} to treat them as no movement.}
@@ -36,8 +48,12 @@ An \code{acti_sleep_guider} object. \code{window} is the selected SPT guider;
 Implements the HDCZA sleep-period-time guider for wrist accelerometry.  It
 finds prolonged periods of little change in the supplied z-axis angle, joins
 interruptions shorter than an hour, and returns the longest resulting block.
-The default threshold is the 0.2 degrees specified in the GGIR guider
-documentation.
+As in GGIR, the default threshold is derived from the recording: 15 times
+the 10th percentile of the five-minute rolling median absolute angle change,
+limited to between 0.13 and 0.5 degrees. Setting \code{threshold} gives a fixed
+threshold in degrees instead (e.g. \code{threshold = 0.2}, the previous default).
+GGIR's \code{HDCZA_threshold = c(p, m)} corresponds to
+\verb{threshold_percentile = p, threshold_multiplier = m}.
 }
 \examples{
 \donttest{

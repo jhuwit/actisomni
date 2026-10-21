@@ -171,13 +171,25 @@
 #' Implements the HDCZA sleep-period-time guider for wrist accelerometry.  It
 #' finds prolonged periods of little change in the supplied z-axis angle, joins
 #' interruptions shorter than an hour, and returns the longest resulting block.
-#' The default threshold is the 0.2 degrees specified in the GGIR guider
-#' documentation.
+#' As in GGIR, the default threshold is derived from the recording: 15 times
+#' the 10th percentile of the five-minute rolling median absolute angle change,
+#' limited to between 0.13 and 0.5 degrees. Setting `threshold` gives a fixed
+#' threshold in degrees instead (e.g. `threshold = 0.2`, the previous default).
+#' GGIR's `HDCZA_threshold = c(p, m)` corresponds to
+#' `threshold_percentile = p, threshold_multiplier = m`.
 #'
 #' @param data A data frame of raw accelerometer observations.
 #' @param epoch Epoch used to average raw angles, passed to
-#'   [lubridate::floor_date()].
-#' @param threshold Maximum five-minute rolling median absolute angle change.
+#'   [lubridate::floor_date()]. Must be at most 200 seconds so that each
+#'   five-minute window holds at least two angles.
+#' @param threshold Fixed maximum five-minute rolling median absolute angle
+#'   change, in degrees. The default, `NULL`, derives the threshold from the
+#'   recording using `threshold_percentile` and `threshold_multiplier`.
+#' @param threshold_percentile Percentile, between 1 and 100, of the rolling
+#'   median absolute angle change used for the data-driven threshold. Ignored
+#'   when `threshold` is set.
+#' @param threshold_multiplier Positive multiplier applied to that percentile
+#'   for the data-driven threshold. Ignored when `threshold` is set.
 #' @param ignore_invalid Whether invalid observations are treated as movement;
 #'   use `NA` to treat them as no movement.
 #' @param min_block_minutes Minimum low-movement block duration.
@@ -191,12 +203,21 @@
 #' hdcza <- acti_sleep_hdcza(raw, epoch = "5 seconds")
 #' }
 #' @export
-acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
+acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = NULL,
+                             threshold_percentile = 10,
+                             threshold_multiplier = 15,
                              ignore_invalid = FALSE, min_block_minutes = 30,
                              max_gap_minutes = 60) {
+  if (!is.null(threshold) &&
+      (!missing(threshold_percentile) || !missing(threshold_multiplier))) {
+    warning("`threshold` is set, so `threshold_percentile` and ",
+            "`threshold_multiplier` are ignored.", call. = FALSE)
+  }
   epoch_data <- .acti_sleep_raw_angles(data, epoch)
   out <- .acti_sleep_hdcza_angle(
     epoch_data$angle, time = epoch_data$time, threshold = threshold,
+    threshold_percentile = threshold_percentile,
+    threshold_multiplier = threshold_multiplier,
     invalid = epoch_data$invalid, ignore_invalid = ignore_invalid,
     min_block_minutes = min_block_minutes, max_gap_minutes = max_gap_minutes
   )
@@ -204,7 +225,9 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
   out
 }
 
-.acti_sleep_hdcza_angle <- function(angle, time, threshold = 0.2,
+.acti_sleep_hdcza_angle <- function(angle, time, threshold = NULL,
+                                    threshold_percentile = 10,
+                                    threshold_multiplier = 15,
                                     invalid = NULL, ignore_invalid = FALSE,
                                     min_block_minutes = 30,
                                     max_gap_minutes = 60) {
@@ -212,8 +235,22 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
   n <- length(angle)
   epoch_seconds <- .acti_sleep_epoch_seconds(time)
   assertthat::assert_that(
-    assertthat::is.number(threshold), threshold >= 0,
-    msg = "`threshold` must be one non-negative number."
+    is.null(threshold) ||
+      (assertthat::is.number(threshold) && is.finite(threshold) &&
+         threshold >= 0),
+    msg = "`threshold` must be `NULL` or one non-negative number of degrees."
+  )
+  assertthat::assert_that(
+    assertthat::is.number(threshold_percentile),
+    is.finite(threshold_percentile),
+    threshold_percentile >= 1, threshold_percentile <= 100,
+    msg = paste0("`threshold_percentile` must be one number between 1 and ",
+                 "100 (e.g. 10 for the 10th percentile).")
+  )
+  assertthat::assert_that(
+    assertthat::is.number(threshold_multiplier),
+    is.finite(threshold_multiplier), threshold_multiplier > 0,
+    msg = "`threshold_multiplier` must be one positive number."
   )
   if (is.null(invalid)) invalid <- rep(FALSE, n)
   assertthat::assert_that(
@@ -222,12 +259,24 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
   )
 
   width <- max(1L, round(5 * 60 / epoch_seconds))
-  angle_change <- abs(diff(angle))
-  rolling_change <- .acti_sleep_roll_apply(
-    angle_change, width, function(x) stats::median(x, na.rm = TRUE)
+  assertthat::assert_that(
+    width >= 2L,
+    msg = paste0("HDCZA needs at least two angles per five-minute window; ",
+                 "use an `epoch` of at most 200 seconds (e.g. \"5 seconds\").")
   )
-  # diff() is one observation shorter; its last rolling value is not needed.
-  rolling_change <- c(rolling_change, 0)[seq_len(n)]
+  # As in GGIR: the median absolute angle change within each centred
+  # five-minute window of angles
+  rolling_change <- .acti_sleep_roll_apply(
+    angle, width, function(x) stats::median(abs(diff(x)), na.rm = TRUE)
+  )
+  if (is.null(threshold)) {
+    # GGIR's data-driven HDCZA threshold, bounded to 0.13--0.5 degrees
+    threshold <- stats::quantile(rolling_change,
+                                 probs = threshold_percentile / 100,
+                                 names = FALSE, na.rm = TRUE) *
+      threshold_multiplier
+    threshold <- min(max(threshold, 0.13), 0.5)
+  }
   low_movement <- rolling_change < threshold
   invalid <- as.logical(invalid)
   if (is.na(ignore_invalid)) {
@@ -254,6 +303,8 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
 #' Identify a sleep window from horizontal posture
 #'
 #' @inheritParams acti_sleep_hdcza
+#' @param epoch Epoch used to average raw angles, passed to
+#'   [lubridate::floor_date()].
 #' @param horizontal_threshold Absolute-angle limit defining horizontal posture.
 #' @param longitudinal_axis Raw axis used as the longitudinal axis: `"X"`,
 #'   `"Y"`, or `"Z"`.

@@ -14,6 +14,78 @@ test_that("HDCZA identifies a prolonged low-angle-change block", {
   expect_true(out$end_index < length(angle))
 })
 
+test_that("HDCZA derives its default threshold from the recording", {
+  set.seed(1)
+  angle <- c(cumsum(rnorm(720, sd = 3)), 40 + rnorm(2880, sd = 0.05),
+             cumsum(rnorm(720, sd = 3)))
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + seq_along(angle) * 5,
+    X = 1, Y = 0, Z = tan(angle * pi / 180)
+  )
+  default <- acti_sleep_hdcza(data, epoch = "5 seconds")
+  expect_true(default$threshold >= 0.13 && default$threshold <= 0.5)
+  expected <- min(max(stats::quantile(default$angle_change, 0.1,
+                                      names = FALSE) * 15, 0.13), 0.5)
+  expect_equal(default$threshold, expected)
+
+  fixed <- acti_sleep_hdcza(data, epoch = "5 seconds", threshold = 0.2)
+  expect_equal(fixed$threshold, 0.2)
+  expect_error(acti_sleep_hdcza(data, threshold = c(10, 15)), "threshold")
+
+  custom <- acti_sleep_hdcza(data, epoch = "5 seconds",
+                             threshold_percentile = 20,
+                             threshold_multiplier = 5)
+  expected <- min(max(stats::quantile(custom$angle_change, 0.2,
+                                      names = FALSE) * 5, 0.13), 0.5)
+  expect_equal(custom$threshold, expected)
+
+  # Proportions and fixed cutoffs passed as a percentile are rejected
+  expect_error(acti_sleep_hdcza(data, threshold_percentile = 0.1),
+               "threshold_percentile")
+  expect_error(acti_sleep_hdcza(data, threshold_percentile = 150),
+               "threshold_percentile")
+  expect_error(acti_sleep_hdcza(data, threshold_multiplier = 0),
+               "threshold_multiplier")
+  expect_warning(
+    acti_sleep_hdcza(data, epoch = "5 seconds", threshold = 0.2,
+                     threshold_percentile = 20),
+    "ignored"
+  )
+})
+
+test_that("HDCZA rejects epochs too coarse for a five-minute window", {
+  angle <- rep(40, 288)
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + seq_along(angle) * 300,
+    X = 1, Y = 0, Z = tan(angle * pi / 180)
+  )
+  expect_error(acti_sleep_hdcza(data, epoch = "5 minutes"),
+               "at least two angles")
+  expect_error(acti_sleep_hdcza(data, epoch = "5 minutes", threshold = 0.2),
+               "at least two angles")
+})
+
+test_that("HDCZA default matches GGIR's HASPT default", {
+  skip_if_not_installed("GGIR")
+  set.seed(2)
+  angle <- c(cumsum(rnorm(1440, sd = 2)), 20 + cumsum(rnorm(4320, sd = 0.05)),
+             cumsum(rnorm(1440, sd = 2)))
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + seq_along(angle) * 5,
+    X = 1, Y = 0, Z = tan(angle * pi / 180)
+  )
+  out <- acti_sleep_hdcza(data, epoch = "5 seconds")
+  params_sleep <- GGIR::load_params()$params_sleep
+  ggir <- GGIR::HASPT(angle = out$epoch_data$angle, ws3 = 5,
+                      HASPT.algo = "HDCZA",
+                      invalid = rep(0, length(out$epoch_data$angle)),
+                      params_sleep = params_sleep)
+  expect_equal(out$start_index, ggir$SPTE_start)
+  # GGIR pads the low-movement series before run-length encoding, so its
+  # SPTE_end is the epoch after the last low-movement epoch of the block.
+  expect_equal(out$end_index + 1, ggir$SPTE_end)
+})
+
 test_that("L5, fixed-window, and diary guiders identify expected windows", {
   activity <- c(rep(10, 120), rep(0, 300), rep(10, 1020))
   time <- as.POSIXct("2020-01-01 18:00:00", tz = "UTC") + 0:1439 * 60
