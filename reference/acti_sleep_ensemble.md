@@ -37,7 +37,8 @@ acti_sleep_ensemble(
 - epoch:
 
   Raw-data aggregation epoch, in seconds or a string such as
-  `"5 seconds"`; see `actibase::acti_standardize_epoch()`.
+  `"5 seconds"`; see
+  [`actibase::acti_standardize_epoch()`](https://jhuwit.github.io/actibase/reference/acti_standardize_epoch.html).
 
 - sib_method:
 
@@ -70,6 +71,5 @@ combines all these analysis columns.
 # \donttest{
 raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 result <- acti_sleep_ensemble(raw)
-#> Error: 'acti_standardize_epoch' is not an exported object from 'namespace:actibase'
 # }
 ```

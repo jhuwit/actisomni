@@ -21,7 +21,7 @@ acti_sleeper(data, epoch = 30L, model_dir)
 - epoch:
 
   Output epoch, in whole seconds or a string such as `"30 seconds"`; see
-  `actibase::acti_standardize_epoch()`.
+  [`actibase::acti_standardize_epoch()`](https://jhuwit.github.io/actibase/reference/acti_standardize_epoch.html).
 
 - model_dir:
 

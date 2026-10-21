@@ -35,7 +35,9 @@
   [`acti_sleep_ensemble()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_ensemble.md),
   [`acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md))
   accept numeric seconds or strings such as `"30 seconds"`, standardized
-  with `actibase::acti_standardize_epoch()`.
+  with
+  [`actibase::acti_standardize_epoch()`](https://jhuwit.github.io/actibase/reference/acti_standardize_epoch.html).
+- Requires actibase (\>= 0.8.0) for `acti_standardize_epoch()`.
 
 ## actisomni 0.2.0
 

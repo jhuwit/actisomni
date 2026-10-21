@@ -75,7 +75,7 @@ epochs whose conventional activity metric is at or below <code>activity_threshol
 
 <dt id="arg-epoch">epoch<a class="anchor" aria-label="anchor" href="#arg-epoch"></a></dt>
 <dd><p>Raw-data aggregation epoch, in seconds or a string such as
-<code>"5 seconds"</code>; see <code>actibase::acti_standardize_epoch()</code>.</p></dd>
+<code>"5 seconds"</code>; see <code><a href="https://jhuwit.github.io/actibase/reference/acti_standardize_epoch.html" class="external-link">actibase::acti_standardize_epoch()</a></code>.</p></dd>
 
 
 <dt id="arg-time-threshold-minutes-angle-threshold">time_threshold_minutes, angle_threshold<a class="anchor" aria-label="anchor" href="#arg-time-threshold-minutes-angle-threshold"></a></dt>
@@ -97,7 +97,6 @@ parameters.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu">actiread</span><span class="fu">::</span><span class="fu"><a href="https://jhuwit.github.io/actiread/reference/acti_read_gt3x.html" class="external-link">acti_read_gt3x</a></span><span class="op">(</span><span class="fu">actiread</span><span class="fu">::</span><span class="fu"><a href="https://jhuwit.github.io/actiread/reference/acti_example_data.html" class="external-link">acti_example_gt3x</a></span><span class="op">(</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sib</span> <span class="op">&lt;-</span> <span class="fu">acti_sleep_sib</span><span class="op">(</span><span class="va">raw</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'acti_standardize_epoch' is not an exported object from 'namespace:actibase'</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

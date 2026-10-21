@@ -35,9 +35,10 @@ acti_sleep_hdcza(
 - epoch:
 
   Epoch used to average raw angles, in seconds or a string such as
-  `"5 seconds"`; see `actibase::acti_standardize_epoch()`. Must be at
-  most 200 seconds so that each five-minute window holds at least two
-  angles.
+  `"5 seconds"`; see
+  [`actibase::acti_standardize_epoch()`](https://jhuwit.github.io/actibase/reference/acti_standardize_epoch.html).
+  Must be at most 200 seconds so that each five-minute window holds at
+  least two angles.
 
 - threshold:
 
@@ -81,6 +82,5 @@ An `acti_sleep_guider` object. `window` is the selected SPT guider;
 # The bundled actiread recording contains raw X, Y, and Z acceleration.
 raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 hdcza <- acti_sleep_hdcza(raw, epoch = "5 seconds")
-#> Error: 'acti_standardize_epoch' is not an exported object from 'namespace:actibase'
 # }
 ```
