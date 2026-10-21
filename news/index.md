@@ -1,6 +1,6 @@
 # Changelog
 
-## actisomni (development version)
+## actisomni 0.3.0
 
 - [`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
   and

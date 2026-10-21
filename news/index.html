@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">actisomni</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="actisomni-development-version">actisomni (development version)<a class="anchor" aria-label="anchor" href="#actisomni-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="actisomni-030">actisomni 0.3.0<a class="anchor" aria-label="anchor" href="#actisomni-030"></a></h2>
 <ul><li>
 <code><a href="../reference/acti_asleep.html">acti_asleep()</a></code> and <code><a href="../reference/py_acti_asleep.html">py_acti_asleep()</a></code> now return times in the input’s time zone. <code>asleep</code> reports local clock times without a time zone, which were previously labelled UTC, shifting predictions by the UTC offset of the input (e.g. one hour for British Summer Time). A new <code>tz</code> argument sets the time zone, which is needed for file-path input (default <code>"UTC"</code>).</li>
 <li>For data-frame input, <code><a href="../reference/acti_asleep.html">acti_asleep()</a></code> and <code><a href="../reference/py_acti_asleep.html">py_acti_asleep()</a></code> pass <code>asleep</code> a clock held at the UTC offset at the start of the recording, so the clock never repeats or skips an hour at a daylight-saving transition and the returned times are the exact input instants. File input still reads the device clock in <code>tz</code>, so the two can differ after a transition.</li>
