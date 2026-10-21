@@ -3,8 +3,13 @@
 Implements the HDCZA sleep-period-time guider for wrist accelerometry.
 It finds prolonged periods of little change in the supplied z-axis
 angle, joins interruptions shorter than an hour, and returns the longest
-resulting block. The default threshold is the 0.2 degrees specified in
-the GGIR guider documentation.
+resulting block. As in GGIR, the default threshold is derived from the
+recording: 15 times the 10th percentile of the five-minute rolling
+median absolute angle change, limited to between 0.13 and 0.5 degrees.
+Setting `threshold` gives a fixed threshold in degrees instead (e.g.
+`threshold = 0.2`, the previous default). GGIR's
+`HDCZA_threshold = c(p, m)` corresponds to
+`threshold_percentile = p, threshold_multiplier = m`.
 
 ## Usage
 
@@ -12,7 +17,9 @@ the GGIR guider documentation.
 acti_sleep_hdcza(
   data,
   epoch = "5 seconds",
-  threshold = 0.2,
+  threshold = NULL,
+  threshold_percentile = 10,
+  threshold_multiplier = 15,
   ignore_invalid = FALSE,
   min_block_minutes = 30,
   max_gap_minutes = 60
@@ -29,10 +36,25 @@ acti_sleep_hdcza(
 
   Epoch used to average raw angles, passed to
   [`lubridate::floor_date()`](https://lubridate.tidyverse.org/reference/round_date.html).
+  Must be at most 200 seconds so that each five-minute window holds at
+  least two angles.
 
 - threshold:
 
-  Maximum five-minute rolling median absolute angle change.
+  Fixed maximum five-minute rolling median absolute angle change, in
+  degrees. The default, `NULL`, derives the threshold from the recording
+  using `threshold_percentile` and `threshold_multiplier`.
+
+- threshold_percentile:
+
+  Percentile, between 1 and 100, of the rolling median absolute angle
+  change used for the data-driven threshold. Ignored when `threshold` is
+  set.
+
+- threshold_multiplier:
+
+  Positive multiplier applied to that percentile for the data-driven
+  threshold. Ignored when `threshold` is set.
 
 - ignore_invalid:
 
