@@ -261,7 +261,8 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
 #' by `sleeper` before the model is called.
 #'
 #' @param data A data frame containing timestamps and triaxial acceleration.
-#' @param epoch Output epoch in seconds.
+#' @param epoch Output epoch, in whole seconds or a string such as
+#'   `"30 seconds"`; see [actibase::acti_standardize_epoch()].
 #' @param model_dir Directory containing the sleeper model files.
 #' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
 #'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. The sleeper
@@ -270,6 +271,7 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
 #' @export
 acti_sleeper <- function(data, epoch = 30L, model_dir) {
   data <- .acti_sleep_model_input(data)
+  epoch <- actibase::acti_standardize_epoch(epoch)
   assertthat::assert_that(
     assertthat::is.count(epoch), epoch > 0,
     assertthat::is.string(model_dir), dir.exists(path.expand(model_dir)),
@@ -306,6 +308,7 @@ py_acti_sleeper <- function(data, epoch = 30L, model_dir,
                             pyenv_function = function() sleeper::py_require_sleeper(),
                             show = FALSE) {
   data <- .acti_sleep_model_input(data)
+  epoch <- actibase::acti_standardize_epoch(epoch)
   assertthat::assert_that(
     assertthat::is.count(epoch), epoch > 0,
     assertthat::is.string(model_dir), dir.exists(path.expand(model_dir)),

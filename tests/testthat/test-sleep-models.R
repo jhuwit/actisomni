@@ -170,6 +170,30 @@ test_that("acti_sleeper supplies required input and harmonizes predictions", {
   expect_equal(out$method, rep("sleeper", 3))
 })
 
+test_that("acti_sleeper accepts numeric and string epochs", {
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + 0:2,
+    X = c(0, 0.1, 0.2), Y = c(0, 0.1, 0.2), Z = c(1, 1, 1)
+  )
+  model_dir <- tempfile()
+  dir.create(model_dir)
+  seen <- NULL
+  testthat::local_mocked_bindings(
+    sl_have_models = function(model_dir) TRUE,
+    estimate_sleep = function(data, epoch, model_dir) {
+      seen <<- c(seen, epoch)
+      data.frame(time = 1577836800, classification = "Sleep")
+    },
+    .package = "sleeper"
+  )
+  for (epoch in list(30L, 30, "30 seconds", "30s")) {
+    acti_sleeper(data, epoch = epoch, model_dir = model_dir)
+  }
+  expect_equal(seen, rep(30, 4))
+  expect_error(acti_sleeper(data, epoch = "abc", model_dir = model_dir),
+               "epoch")
+})
+
 test_that("acti_sleeper requires a complete model directory", {
   data <- data.frame(
     time = as.POSIXct("2020-01-01", tz = "UTC") + 0:2,

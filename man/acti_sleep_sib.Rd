@@ -18,7 +18,8 @@ acti_sleep_sib(
 
 \item{method}{SIB method: \code{"vanHees2015"} or \code{"low_activity"}.}
 
-\item{epoch}{Raw-data aggregation epoch.}
+\item{epoch}{Raw-data aggregation epoch, in seconds or a string such as
+\code{"5 seconds"}; see \code{\link[actibase:acti_standardize_epoch]{actibase::acti_standardize_epoch()}}.}
 
 \item{time_threshold_minutes, angle_threshold}{van Hees posture-change
 parameters.}

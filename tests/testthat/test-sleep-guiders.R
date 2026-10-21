@@ -14,6 +14,28 @@ test_that("HDCZA identifies a prolonged low-angle-change block", {
   expect_true(out$end_index < length(angle))
 })
 
+test_that("raw-angle guiders and ensemble accept numeric and string epochs", {
+  angle <- c(seq(0, 40, length.out = 60), rep(40, 480),
+             seq(40, 80, length.out = 60))
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + seq_along(angle) * 60,
+    X = 1, Y = 0, Z = tan(angle * pi / 180)
+  )
+  expected <- acti_sleep_hdcza(data, epoch = "1 minute")
+  expect_equal(acti_sleep_hdcza(data, epoch = 60), expected)
+  expect_equal(acti_sleep_hdcza(data, epoch = "60s"), expected)
+  expect_equal(acti_sleep_horangle(data, epoch = 60),
+               acti_sleep_horangle(data, epoch = "1 minute"))
+  expect_error(acti_sleep_hdcza(data, epoch = "abc"), "epoch")
+
+  raw <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + seq(0, 40 * 60, by = 5),
+    X = 1, Y = 0, Z = 0
+  )
+  expect_equal(acti_sleep_ensemble(raw, epoch = 5),
+               acti_sleep_ensemble(raw, epoch = "5 seconds"))
+})
+
 test_that("HDCZA derives its default threshold from the recording", {
   set.seed(1)
   angle <- c(cumsum(rnorm(720, sd = 3)), 40 + rnorm(2880, sd = 0.05),

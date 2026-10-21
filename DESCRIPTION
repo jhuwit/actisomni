@@ -6,7 +6,8 @@ Authors@R: c(
     person(given = "John",
            family = "Muschelli",
            role = c("aut", "cre"),
-           email = "muschellij2@gmail.com")
+           email = "muschellij2@gmail.com",
+           comment = c(ORCID = "0000-0001-6469-1750"))
     )
 Description: Estimates sleep from wrist accelerometry and epoch-level activity
     data. Implements sleep-period-time guiders based on angle changes, posture,
@@ -25,7 +26,7 @@ License: GPL-3
 Depends: 
     R (>= 4.1.0)
 Suggests:
-    testthat,
+    testthat (>= 3.0.0),
     utils,
     covr,
     knitr,
@@ -49,5 +50,6 @@ Imports:
     asleep,
     sleeper
 Config/roxygen2/version: 8.0.0
-URL: https://jhuwit.github.io/actisomni/
+URL: https://github.com/jhuwit/actisomni, https://jhuwit.github.io/actisomni/
 BugReports: https://github.com/jhuwit/actisomni/issues
+Config/testthat/edition: 3

@@ -21,7 +21,8 @@ a \code{sib} column or a conventional activity column.}
 \item{guiders}{Guider names. Defaults depend on whether raw acceleration is
 available.}
 
-\item{epoch}{Raw-data aggregation epoch.}
+\item{epoch}{Raw-data aggregation epoch, in seconds or a string such as
+\code{"5 seconds"}; see \code{\link[actibase:acti_standardize_epoch]{actibase::acti_standardize_epoch()}}.}
 
 \item{sib_method}{SIB method, passed to \code{acti_sleep_sib()}.}
 

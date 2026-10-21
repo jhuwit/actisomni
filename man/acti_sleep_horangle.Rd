@@ -17,8 +17,8 @@ acti_sleep_horangle(
 \arguments{
 \item{data}{A data frame of raw accelerometer observations.}
 
-\item{epoch}{Epoch used to average raw angles, passed to
-\code{\link[lubridate:floor_date]{lubridate::floor_date()}}.}
+\item{epoch}{Epoch used to average raw angles, in seconds or a string
+such as \code{"5 seconds"}; see \code{\link[actibase:acti_standardize_epoch]{actibase::acti_standardize_epoch()}}.}
 
 \item{longitudinal_axis}{Raw axis used as the longitudinal axis: \code{"X"},
 \code{"Y"}, or \code{"Z"}.}

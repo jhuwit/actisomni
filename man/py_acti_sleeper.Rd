@@ -15,7 +15,8 @@ py_acti_sleeper(
 \arguments{
 \item{data}{A data frame containing timestamps and triaxial acceleration.}
 
-\item{epoch}{Output epoch in seconds.}
+\item{epoch}{Output epoch, in whole seconds or a string such as
+\code{"30 seconds"}; see \code{\link[actibase:acti_standardize_epoch]{actibase::acti_standardize_epoch()}}.}
 
 \item{model_dir}{Directory containing the sleeper model files.}
 

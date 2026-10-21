@@ -18,9 +18,10 @@ acti_sleep_hdcza(
 \arguments{
 \item{data}{A data frame of raw accelerometer observations.}
 
-\item{epoch}{Epoch used to average raw angles, passed to
-\code{\link[lubridate:floor_date]{lubridate::floor_date()}}. Must be at most 200 seconds so that each
-five-minute window holds at least two angles.}
+\item{epoch}{Epoch used to average raw angles, in seconds or a string
+such as \code{"5 seconds"}; see \code{\link[actibase:acti_standardize_epoch]{actibase::acti_standardize_epoch()}}. Must be
+at most 200 seconds so that each five-minute window holds at least two
+angles.}
 
 \item{threshold}{Fixed maximum five-minute rolling median absolute angle
 change, in degrees. The default, \code{NULL}, derives the threshold from the

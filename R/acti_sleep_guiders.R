@@ -123,6 +123,7 @@
 }
 
 .acti_sleep_raw_angles <- function(data, epoch, longitudinal_axis = "Z") {
+  epoch <- actibase::acti_standardize_epoch(epoch, output = "character")
   data <- actibase::acti_standardize_data(
     data, subset_xyz = FALSE, check_xyz = TRUE
   )
@@ -179,9 +180,10 @@
 #' `threshold_percentile = p, threshold_multiplier = m`.
 #'
 #' @param data A data frame of raw accelerometer observations.
-#' @param epoch Epoch used to average raw angles, passed to
-#'   [lubridate::floor_date()]. Must be at most 200 seconds so that each
-#'   five-minute window holds at least two angles.
+#' @param epoch Epoch used to average raw angles, in seconds or a string
+#'   such as `"5 seconds"`; see [actibase::acti_standardize_epoch()]. Must be
+#'   at most 200 seconds so that each five-minute window holds at least two
+#'   angles.
 #' @param threshold Fixed maximum five-minute rolling median absolute angle
 #'   change, in degrees. The default, `NULL`, derives the threshold from the
 #'   recording using `threshold_percentile` and `threshold_multiplier`.
@@ -303,8 +305,8 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = NULL,
 #' Identify a sleep window from horizontal posture
 #'
 #' @inheritParams acti_sleep_hdcza
-#' @param epoch Epoch used to average raw angles, passed to
-#'   [lubridate::floor_date()].
+#' @param epoch Epoch used to average raw angles, in seconds or a string
+#'   such as `"5 seconds"`; see [actibase::acti_standardize_epoch()].
 #' @param horizontal_threshold Absolute-angle limit defining horizontal posture.
 #' @param longitudinal_axis Raw axis used as the longitudinal axis: `"X"`,
 #'   `"Y"`, or `"Z"`.
@@ -799,7 +801,8 @@ acti_sleep_fuse_labels <- function(labels, threshold = 0.5, tolerance = 1e-6,
 #'
 #' @param data Raw triaxial or regular epoch-level data.
 #' @param method SIB method: `"vanHees2015"` or `"low_activity"`.
-#' @param epoch Raw-data aggregation epoch.
+#' @param epoch Raw-data aggregation epoch, in seconds or a string such as
+#'   `"5 seconds"`; see [actibase::acti_standardize_epoch()].
 #' @param time_threshold_minutes,angle_threshold van Hees posture-change
 #'   parameters.
 #' @param activity_threshold Low-activity cutoff for epoch data.
@@ -853,7 +856,8 @@ acti_sleep_sib <- function(data, method = c("vanHees2015", "low_activity"),
 #'   a `sib` column or a conventional activity column.
 #' @param guiders Guider names. Defaults depend on whether raw acceleration is
 #'   available.
-#' @param epoch Raw-data aggregation epoch.
+#' @param epoch Raw-data aggregation epoch, in seconds or a string such as
+#'   `"5 seconds"`; see [actibase::acti_standardize_epoch()].
 #' @param sib_method SIB method, passed to `acti_sleep_sib()`.
 #' @param fusion Consensus rule: `"staple"` or `"majority"`.
 #' @param sleepwindow_type SPT or TimeInBed overlap rule.
@@ -875,6 +879,7 @@ acti_sleep_ensemble <- function(data, guiders = NULL, epoch = "5 seconds",
                                 sleepwindow_type = c("SPT", "TimeInBed"), ...) {
   fusion <- match.arg(fusion)
   sleepwindow_type <- match.arg(sleepwindow_type)
+  epoch <- actibase::acti_standardize_epoch(epoch, output = "character")
   standard <- actibase::acti_standardize_data(
     data, subset_xyz = FALSE, check_xyz = FALSE
   )

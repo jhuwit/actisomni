@@ -20,6 +20,9 @@
 * The HDCZA rolling statistic is now the median absolute angle change within
   each five-minute window of angles, as in GGIR, rather than the median of the
   changes over a window one epoch wider.
+* `epoch` arguments (guiders, `acti_sleep_sib()`, `acti_sleep_ensemble()`,
+  `acti_sleeper()`) accept numeric seconds or strings such as `"30 seconds"`,
+  standardized with `actibase::acti_standardize_epoch()`.
 
 # actisomni 0.2.0
 
