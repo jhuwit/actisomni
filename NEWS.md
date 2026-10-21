@@ -1,4 +1,4 @@
-# actisomni (development version)
+# actisomni 0.3.0
 
 * `acti_asleep()` and `py_acti_asleep()` now return times in the input's time
   zone. `asleep` reports local clock times without a time zone, which were
