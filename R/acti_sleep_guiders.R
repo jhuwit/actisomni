@@ -171,13 +171,18 @@
 #' Implements the HDCZA sleep-period-time guider for wrist accelerometry.  It
 #' finds prolonged periods of little change in the supplied z-axis angle, joins
 #' interruptions shorter than an hour, and returns the longest resulting block.
-#' The default threshold is the 0.2 degrees specified in the GGIR guider
-#' documentation.
+#' As in GGIR, the default threshold is derived from the recording: 15 times
+#' the 10th percentile of the five-minute rolling median absolute angle change,
+#' limited to between 0.13 and 0.5 degrees. A single number gives a fixed
+#' threshold in degrees (e.g. `threshold = 0.2`, the previous default).
 #'
 #' @param data A data frame of raw accelerometer observations.
 #' @param epoch Epoch used to average raw angles, passed to
 #'   [lubridate::floor_date()].
-#' @param threshold Maximum five-minute rolling median absolute angle change.
+#' @param threshold Maximum five-minute rolling median absolute angle change,
+#'   in degrees. Either one number (a fixed threshold) or, as in GGIR's
+#'   `HDCZA_threshold`, a percentile and multiplier `c(percentile, multiplier)`
+#'   used to derive the threshold from the recording (default `c(10, 15)`).
 #' @param ignore_invalid Whether invalid observations are treated as movement;
 #'   use `NA` to treat them as no movement.
 #' @param min_block_minutes Minimum low-movement block duration.
@@ -191,7 +196,7 @@
 #' hdcza <- acti_sleep_hdcza(raw, epoch = "5 seconds")
 #' }
 #' @export
-acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
+acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = c(10, 15),
                              ignore_invalid = FALSE, min_block_minutes = 30,
                              max_gap_minutes = 60) {
   epoch_data <- .acti_sleep_raw_angles(data, epoch)
@@ -204,7 +209,7 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
   out
 }
 
-.acti_sleep_hdcza_angle <- function(angle, time, threshold = 0.2,
+.acti_sleep_hdcza_angle <- function(angle, time, threshold = c(10, 15),
                                     invalid = NULL, ignore_invalid = FALSE,
                                     min_block_minutes = 30,
                                     max_gap_minutes = 60) {
@@ -212,8 +217,10 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
   n <- length(angle)
   epoch_seconds <- .acti_sleep_epoch_seconds(time)
   assertthat::assert_that(
-    assertthat::is.number(threshold), threshold >= 0,
-    msg = "`threshold` must be one non-negative number."
+    is.numeric(threshold), length(threshold) %in% 1:2,
+    all(is.finite(threshold)), all(threshold >= 0),
+    msg = paste0("`threshold` must be one non-negative number or a ",
+                 "percentile and multiplier, `c(percentile, multiplier)`.")
   )
   if (is.null(invalid)) invalid <- rep(FALSE, n)
   assertthat::assert_that(
@@ -222,12 +229,17 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = 0.2,
   )
 
   width <- max(1L, round(5 * 60 / epoch_seconds))
-  angle_change <- abs(diff(angle))
+  # As in GGIR: the median absolute angle change within each centred
+  # five-minute window of angles
   rolling_change <- .acti_sleep_roll_apply(
-    angle_change, width, function(x) stats::median(x, na.rm = TRUE)
+    angle, width, function(x) stats::median(abs(diff(x)), na.rm = TRUE)
   )
-  # diff() is one observation shorter; its last rolling value is not needed.
-  rolling_change <- c(rolling_change, 0)[seq_len(n)]
+  if (length(threshold) == 2L) {
+    # GGIR's data-driven HDCZA threshold, bounded to 0.13--0.5 degrees
+    threshold <- stats::quantile(rolling_change, probs = threshold[1] / 100,
+                                 names = FALSE, na.rm = TRUE) * threshold[2]
+    threshold <- min(max(threshold, 0.13), 0.5)
+  }
   low_movement <- rolling_change < threshold
   invalid <- as.logical(invalid)
   if (is.na(ignore_invalid)) {

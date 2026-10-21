@@ -7,7 +7,7 @@
 acti_sleep_hdcza(
   data,
   epoch = "5 seconds",
-  threshold = 0.2,
+  threshold = c(10, 15),
   ignore_invalid = FALSE,
   min_block_minutes = 30,
   max_gap_minutes = 60
@@ -19,7 +19,10 @@ acti_sleep_hdcza(
 \item{epoch}{Epoch used to average raw angles, passed to
 \code{\link[lubridate:floor_date]{lubridate::floor_date()}}.}
 
-\item{threshold}{Maximum five-minute rolling median absolute angle change.}
+\item{threshold}{Maximum five-minute rolling median absolute angle change,
+in degrees. Either one number (a fixed threshold) or, as in GGIR's
+\code{HDCZA_threshold}, a percentile and multiplier \code{c(percentile, multiplier)}
+used to derive the threshold from the recording (default \code{c(10, 15)}).}
 
 \item{ignore_invalid}{Whether invalid observations are treated as movement;
 use \code{NA} to treat them as no movement.}
@@ -36,8 +39,10 @@ An \code{acti_sleep_guider} object. \code{window} is the selected SPT guider;
 Implements the HDCZA sleep-period-time guider for wrist accelerometry.  It
 finds prolonged periods of little change in the supplied z-axis angle, joins
 interruptions shorter than an hour, and returns the longest resulting block.
-The default threshold is the 0.2 degrees specified in the GGIR guider
-documentation.
+As in GGIR, the default threshold is derived from the recording: 15 times
+the 10th percentile of the five-minute rolling median absolute angle change,
+limited to between 0.13 and 0.5 degrees. A single number gives a fixed
+threshold in degrees (e.g. \code{threshold = 0.2}, the previous default).
 }
 \examples{
 \donttest{
