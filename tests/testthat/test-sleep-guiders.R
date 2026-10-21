@@ -30,7 +30,27 @@ test_that("HDCZA derives its default threshold from the recording", {
 
   fixed <- acti_sleep_hdcza(data, epoch = "5 seconds", threshold = 0.2)
   expect_equal(fixed$threshold, 0.2)
-  expect_error(acti_sleep_hdcza(data, threshold = c(10, 15, 1)), "threshold")
+  expect_error(acti_sleep_hdcza(data, threshold = c(10, 15)), "threshold")
+
+  custom <- acti_sleep_hdcza(data, epoch = "5 seconds",
+                             threshold_percentile = 20,
+                             threshold_multiplier = 5)
+  expected <- min(max(stats::quantile(custom$angle_change, 0.2,
+                                      names = FALSE) * 5, 0.13), 0.5)
+  expect_equal(custom$threshold, expected)
+
+  # Proportions and fixed cutoffs passed as a percentile are rejected
+  expect_error(acti_sleep_hdcza(data, threshold_percentile = 0.1),
+               "threshold_percentile")
+  expect_error(acti_sleep_hdcza(data, threshold_percentile = 150),
+               "threshold_percentile")
+  expect_error(acti_sleep_hdcza(data, threshold_multiplier = 0),
+               "threshold_multiplier")
+  expect_warning(
+    acti_sleep_hdcza(data, epoch = "5 seconds", threshold = 0.2,
+                     threshold_percentile = 20),
+    "ignored"
+  )
 })
 
 test_that("HDCZA default matches GGIR's HASPT default", {
