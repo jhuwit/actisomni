@@ -55,7 +55,8 @@ requirements separate from the current R session.</p>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  force_download <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  pyenv_function <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">asleep</span><span class="fu">::</span><span class="fu"><a href="https://jhuwit.github.io/asleep/reference/py_require_asleep.html" class="external-link">py_require_asleep</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  show <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  show <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tz <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,6 +104,24 @@ a readable accelerometry file path. File paths are passed unchanged to
 
 <dt id="arg-show">show<a class="anchor" aria-label="anchor" href="#arg-show"></a></dt>
 <dd><p>Whether to stream subprocess output.</p></dd>
+
+
+<dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
+<dd><p>Time zone of the recording and the returned times. By default
+the time zone of <code>data$time</code>, or <code>"UTC"</code> when <code>data</code> is a file path; set
+it to the recording's time zone for file input. <code>asleep</code> works on local
+clock times without a time zone and splits the recording into
+noon-to-noon days on that clock.</p>
+<p>For data-frame input, the clock passed to <code>asleep</code> is held at the UTC
+offset in effect at the start of the recording, as a device clock is, so
+it never repeats or skips an hour at a daylight-saving transition. The
+returned times are the exact instants of the input, shown in <code>tz</code>.</p>
+<p>For file input, the device clock times that <code>asleep</code> reports are taken as
+clock times in <code>tz</code>. File and data-frame input of the same recording can
+therefore differ after a daylight-saving transition: a device clock that
+does not change for daylight saving is an hour off from <code>tz</code> until the
+clocks change back. This difference is known. To match such a device
+clock, use a fixed-offset time zone, e.g. <code>tz = "Etc/GMT-1"</code> for UTC+1.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -50,7 +50,8 @@ and converts its predictions to the common <code>acti_sleep_estimate</code> form
 <span>  pytorch_device <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cpu"</span>, <span class="st">"cuda:0"</span><span class="op">)</span>,</span>
 <span>  sample_rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  force_download <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  force_download <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tz <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">acti_calculate_asleep</span><span class="op">(</span></span>
@@ -61,7 +62,8 @@ and converts its predictions to the common <code>acti_sleep_estimate</code> form
 <span>  pytorch_device <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cpu"</span>, <span class="st">"cuda:0"</span><span class="op">)</span>,</span>
 <span>  sample_rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  force_download <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  force_download <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tz <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -101,6 +103,24 @@ a readable accelerometry file path. File paths are passed unchanged to
 
 <dt id="arg-force-download">force_download<a class="anchor" aria-label="anchor" href="#arg-force-download"></a></dt>
 <dd><p>Whether to re-download <code>asleep</code> model files.</p></dd>
+
+
+<dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
+<dd><p>Time zone of the recording and the returned times. By default
+the time zone of <code>data$time</code>, or <code>"UTC"</code> when <code>data</code> is a file path; set
+it to the recording's time zone for file input. <code>asleep</code> works on local
+clock times without a time zone and splits the recording into
+noon-to-noon days on that clock.</p>
+<p>For data-frame input, the clock passed to <code>asleep</code> is held at the UTC
+offset in effect at the start of the recording, as a device clock is, so
+it never repeats or skips an hour at a daylight-saving transition. The
+returned times are the exact instants of the input, shown in <code>tz</code>.</p>
+<p>For file input, the device clock times that <code>asleep</code> reports are taken as
+clock times in <code>tz</code>. File and data-frame input of the same recording can
+therefore differ after a daylight-saving transition: a device clock that
+does not change for daylight saving is an hour off from <code>tz</code> until the
+clocks change back. This difference is known. To match such a device
+clock, use a fixed-offset time zone, e.g. <code>tz = "Etc/GMT-1"</code> for UTC+1.</p></dd>
 
 </dl></div>
     <div class="section level2">

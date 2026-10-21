@@ -20,7 +20,8 @@ py_acti_asleep(
   verbose = TRUE,
   force_download = FALSE,
   pyenv_function = function() asleep::py_require_asleep(),
-  show = FALSE
+  show = FALSE,
+  tz = NULL
 )
 ```
 
@@ -68,6 +69,27 @@ py_acti_asleep(
 - show:
 
   Whether to stream subprocess output.
+
+- tz:
+
+  Time zone of the recording and the returned times. By default the time
+  zone of `data$time`, or `"UTC"` when `data` is a file path; set it to
+  the recording's time zone for file input. `asleep` works on local
+  clock times without a time zone and splits the recording into
+  noon-to-noon days on that clock.
+
+  For data-frame input, the clock passed to `asleep` is held at the UTC
+  offset in effect at the start of the recording, as a device clock is,
+  so it never repeats or skips an hour at a daylight-saving transition.
+  The returned times are the exact instants of the input, shown in `tz`.
+
+  For file input, the device clock times that `asleep` reports are taken
+  as clock times in `tz`. File and data-frame input of the same
+  recording can therefore differ after a daylight-saving transition: a
+  device clock that does not change for daylight saving is an hour off
+  from `tz` until the clocks change back. This difference is known. To
+  match such a device clock, use a fixed-offset time zone, e.g.
+  `tz = "Etc/GMT-1"` for UTC+1.
 
 ## Value
 
