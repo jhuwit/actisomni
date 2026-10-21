@@ -61,6 +61,20 @@
   lubridate::ymd_hms(as.character(x), tz = "UTC", quiet = TRUE)
 }
 
+# Convert naive local clock labels, in time order, to instants in `tz`. At an
+# autumn daylight-saving transition a label occurs twice; a label at or before
+# one already seen is its second (later) occurrence. Labels in a spring gap
+# name no instant and are returned as NA.
+.acti_sleep_local_time <- function(x, tz) {
+  clock <- .acti_sleep_model_time(x)
+  time <- lubridate::force_tz(clock, tz, roll_dst = c("NA", "pre"))
+  later <- lubridate::force_tz(clock, tz, roll_dst = c("NA", "post"))
+  seen <- c(-Inf, cummax(as.numeric(clock))[-length(clock)])
+  repeated <- as.numeric(clock) <= seen
+  time[repeated] <- later[repeated]
+  time
+}
+
 .acti_sleep_model_result <- function(time, sleep, method,
                                      sleep_probability = NA_real_,
                                      sleep_stage = NA_character_,
@@ -98,9 +112,22 @@
     msg = "`asleep` did not return a predictions data frame with `time` and `sleep_wake`."
   )
   predictions <- result$predictions
+  assertthat::assert_that(
+    !anyNA(.acti_sleep_model_time(predictions$time)),
+    msg = "`asleep` returned missing or unparseable prediction times."
+  )
+  # Relabel (not convert) the naive clock times to the input time zone.
+  # Labels skipped by a spring transition cover no observations.
+  time <- .acti_sleep_local_time(predictions$time, tz)
+  predictions <- predictions[!is.na(time), , drop = FALSE]
+  time <- time[!is.na(time)]
+  assertthat::assert_that(
+    all(diff(as.numeric(time)) > 0),
+    msg = paste0("`asleep` prediction times are not increasing in time zone ",
+                 "\"", tz, "\"; repeated daylight-saving clock times can ",
+                 "only be resolved when predictions are in time order.")
+  )
   sleep_wake <- tolower(trimws(as.character(predictions$sleep_wake)))
-  # Relabel (not convert) the naive clock times to the input time zone
-  time <- lubridate::force_tz(.acti_sleep_model_time(predictions$time), tz)
   .acti_sleep_model_result(
     time = time,
     sleep = sleep_wake == "sleep",
@@ -146,6 +173,11 @@
 #'   times without a time zone; by default they are given the time zone of
 #'   `data$time` (so they line up with the input), or `"UTC"` when `data` is a
 #'   file path. Set `tz` to the recording's time zone for file input.
+#'   Clock times repeated by an autumn daylight-saving transition are resolved
+#'   by prediction order: the first occurrence takes the earlier instant and
+#'   the second the later one. Clock times skipped by a spring transition
+#'   cover no observations and are dropped. The same rule applies to file
+#'   input; an error is raised if predictions are not in time order.
 #' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
 #'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. The asleep
 #'   backend currently does not return probabilities, so `sleep_probability` is

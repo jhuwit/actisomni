@@ -4,7 +4,10 @@
   zone. `asleep` reports local clock times without a time zone, which were
   previously labelled UTC, shifting predictions by the UTC offset of the
   input (e.g. one hour for British Summer Time). A new `tz` argument sets the
-  time zone, which is needed for file-path input (default `"UTC"`).
+  time zone, which is needed for file-path input (default `"UTC"`). Clock
+  times repeated at an autumn daylight-saving transition are resolved by
+  prediction order, so both occurrences of e.g. 01:30 map to distinct
+  instants.
 
 # actisomni 0.2.0
 

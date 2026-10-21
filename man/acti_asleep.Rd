@@ -51,7 +51,12 @@ a readable accelerometry file path. File paths are passed unchanged to
 \item{tz}{Time zone of the returned times. \code{asleep} reports local clock
 times without a time zone; by default they are given the time zone of
 \code{data$time} (so they line up with the input), or \code{"UTC"} when \code{data} is a
-file path. Set \code{tz} to the recording's time zone for file input.}
+file path. Set \code{tz} to the recording's time zone for file input.
+Clock times repeated by an autumn daylight-saving transition are resolved
+by prediction order: the first occurrence takes the earlier instant and
+the second the later one. Clock times skipped by a spring transition
+cover no observations and are dropped. The same rule applies to file
+input; an error is raised if predictions are not in time order.}
 }
 \value{
 An \code{acti_sleep_estimate} tibble with \code{time}, \code{sleep},
