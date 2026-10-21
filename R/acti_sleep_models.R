@@ -38,6 +38,22 @@
   data
 }
 
+# asleep reports local clock times without a time zone. For data-frame input
+# these are the clock times of `data$time`; for a file path they are the
+# device clock, so the time zone must be supplied.
+.acti_sleep_input_tz <- function(data, tz = NULL) {
+  if (!is.null(tz)) {
+    assertthat::assert_that(assertthat::is.string(tz),
+                            msg = "`tz` must be one time zone name.")
+    return(tz)
+  }
+  if (is.data.frame(data) && inherits(data$time, "POSIXt")) {
+    tzone <- attr(data$time, "tzone")
+    return(if (is.null(tzone)) "" else tzone[1L])
+  }
+  "UTC"
+}
+
 .acti_sleep_model_time <- function(x) {
   if (inherits(x, "POSIXct")) return(x)
   if (!inherits(x, "POSIXt")) return(as.POSIXct(x, tz = "UTC"))
@@ -75,7 +91,7 @@
   )
 }
 
-.acti_sleep_asleep_result <- function(result) {
+.acti_sleep_asleep_result <- function(result, tz = "UTC") {
   assertthat::assert_that(
     !is.null(result), is.data.frame(result$predictions),
     all(c("time", "sleep_wake") %in% names(result$predictions)),
@@ -83,8 +99,10 @@
   )
   predictions <- result$predictions
   sleep_wake <- tolower(trimws(as.character(predictions$sleep_wake)))
+  # Relabel (not convert) the naive clock times to the input time zone
+  time <- lubridate::force_tz(.acti_sleep_model_time(predictions$time), tz)
   .acti_sleep_model_result(
-    time = predictions$time,
+    time = time,
     sleep = sleep_wake == "sleep",
     sleep_stage = if ("sleep_stage" %in% names(predictions)) {
       predictions$sleep_stage
@@ -124,6 +142,10 @@
 #' @param sample_rate Optional input sample rate.
 #' @param verbose Whether `asleep` prints progress messages.
 #' @param force_download Whether to re-download `asleep` model files.
+#' @param tz Time zone of the returned times. `asleep` reports local clock
+#'   times without a time zone; by default they are given the time zone of
+#'   `data$time` (so they line up with the input), or `"UTC"` when `data` is a
+#'   file path. Set `tz` to the recording's time zone for file input.
 #' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
 #'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. The asleep
 #'   backend currently does not return probabilities, so `sleep_probability` is
@@ -133,8 +155,9 @@ acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
                               report_light_and_temp = FALSE,
                               pytorch_device = c("cpu", "cuda:0"),
                               sample_rate = NULL, verbose = TRUE,
-                              force_download = FALSE) {
+                              force_download = FALSE, tz = NULL) {
   data <- .acti_sleep_asleep_input(data)
+  tz <- .acti_sleep_input_tz(data, tz)
   result <- asleep::asleep(
     file = data, min_wear_hours = min_wear_hours, time_shift = time_shift,
     report_light_and_temp = report_light_and_temp,
@@ -144,7 +167,7 @@ acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
   if (Sys.getenv("NOT_CRAN") != "true") {
     on.exit(cleanup_uv_lock_files(), add = TRUE)
   }
-  .acti_sleep_asleep_result(result)
+  .acti_sleep_asleep_result(result, tz = tz)
 }
 
 #' @export
@@ -168,8 +191,9 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
                            sample_rate = NULL, verbose = TRUE,
                            force_download = FALSE,
                            pyenv_function = function() asleep::py_require_asleep(),
-                           show = FALSE) {
+                           show = FALSE, tz = NULL) {
   data <- .acti_sleep_asleep_input(data)
+  tz <- .acti_sleep_input_tz(data, tz)
   result <- asleep::py_asleep(
     file = data, min_wear_hours = min_wear_hours, time_shift = time_shift,
     report_light_and_temp = report_light_and_temp,
@@ -180,7 +204,7 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
   if (Sys.getenv("NOT_CRAN") != "true") {
     on.exit(cleanup_uv_lock_files(), add = TRUE)
   }
-  .acti_sleep_asleep_result(result)
+  .acti_sleep_asleep_result(result, tz = tz)
 }
 
 #' Estimate sleep with the sleeper model

@@ -14,7 +14,8 @@ py_acti_asleep(
   verbose = TRUE,
   force_download = FALSE,
   pyenv_function = function() asleep::py_require_asleep(),
-  show = FALSE
+  show = FALSE,
+  tz = NULL
 )
 }
 \arguments{
@@ -39,6 +40,11 @@ a readable accelerometry file path. File paths are passed unchanged to
 \item{pyenv_function}{Function that configures Python in the subprocess.}
 
 \item{show}{Whether to stream subprocess output.}
+
+\item{tz}{Time zone of the returned times. \code{asleep} reports local clock
+times without a time zone; by default they are given the time zone of
+\code{data$time} (so they line up with the input), or \code{"UTC"} when \code{data} is a
+file path. Set \code{tz} to the recording's time zone for file input.}
 }
 \value{
 An \code{acti_sleep_estimate} tibble; see \code{\link[=acti_asleep]{acti_asleep()}}.

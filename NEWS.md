@@ -1,3 +1,11 @@
+# actisomni (development version)
+
+* `acti_asleep()` and `py_acti_asleep()` now return times in the input's time
+  zone. `asleep` reports local clock times without a time zone, which were
+  previously labelled UTC, shifting predictions by the UTC offset of the
+  input (e.g. one hour for British Summer Time). A new `tz` argument sets the
+  time zone, which is needed for file-path input (default `"UTC"`).
+
 # actisomni 0.2.0
 
 * Removed the Tudor--Locke sleep-period adapter and diary-labeling helper;

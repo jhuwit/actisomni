@@ -13,7 +13,8 @@ acti_asleep(
   pytorch_device = c("cpu", "cuda:0"),
   sample_rate = NULL,
   verbose = TRUE,
-  force_download = FALSE
+  force_download = FALSE,
+  tz = NULL
 )
 
 acti_calculate_asleep(
@@ -24,7 +25,8 @@ acti_calculate_asleep(
   pytorch_device = c("cpu", "cuda:0"),
   sample_rate = NULL,
   verbose = TRUE,
-  force_download = FALSE
+  force_download = FALSE,
+  tz = NULL
 )
 }
 \arguments{
@@ -45,6 +47,11 @@ a readable accelerometry file path. File paths are passed unchanged to
 \item{verbose}{Whether \code{asleep} prints progress messages.}
 
 \item{force_download}{Whether to re-download \code{asleep} model files.}
+
+\item{tz}{Time zone of the returned times. \code{asleep} reports local clock
+times without a time zone; by default they are given the time zone of
+\code{data$time} (so they line up with the input), or \code{"UTC"} when \code{data} is a
+file path. Set \code{tz} to the recording's time zone for file input.}
 }
 \value{
 An \code{acti_sleep_estimate} tibble with \code{time}, \code{sleep},
