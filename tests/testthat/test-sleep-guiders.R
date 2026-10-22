@@ -211,3 +211,61 @@ test_that("ensemble defaults omit L5 for recordings shorter than five hours", {
   ensemble <- acti_sleep_ensemble(raw, epoch = "5 seconds")
   expect_setequal(names(ensemble$guiders), c("HDCZA", "HorAngle", "setwindow"))
 })
+
+test_that("rollmedian smoothing reproduces GGIR's anglez", {
+  skip_if_not_installed("GGIR")
+  set.seed(1)
+  sf <- 30
+  n <- sf * 60 * 10
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + (seq_len(n) - 1) / sf,
+    X = rnorm(n, 0, 0.3), Y = rnorm(n, 0.2, 0.3), Z = rnorm(n, 0.9, 0.3)
+  )
+  attr(data, "sample_rate") <- sf
+  metrics <- c("bfen", "enmo", "lfenmo", "en", "hfen", "hfenplus", "mad",
+               "anglex", "angley", "anglez", "roll_med_acc_x",
+               "roll_med_acc_y", "roll_med_acc_z", "dev_roll_med_acc_x",
+               "dev_roll_med_acc_y", "dev_roll_med_acc_z", "enmoa", "lfen",
+               "lfx", "lfy", "lfz", "hfx", "hfy", "hfz", "bfx", "bfy", "bfz",
+               "zcx", "zcy", "zcz", "brondcounts", "neishabouricounts")
+  metrics2do <- stats::setNames(as.list(metrics == "anglez"),
+                                paste0("do.", metrics))
+  xyz <- as.matrix(data[, c("X", "Y", "Z")])
+  colnames(xyz) <- c("x", "y", "z")
+  ggir <- GGIR::g.applymetrics(data = xyz, sf = sf, ws3 = 5,
+                               metrics2do = metrics2do)$angle_z
+
+  smoothed <- acti_sleep_sib(data)$angle
+  raw <- acti_sleep_sib(data, smooth = "none")$angle
+  expect_length(smoothed, length(ggir))
+  # GGIR fills the trailing edge differently, so the last epoch is excluded
+  interior <- seq_len(length(ggir) - 1)
+  expect_equal(smoothed[interior], ggir[interior], tolerance = 1e-10)
+  expect_gt(max(abs(raw - ggir)), 1)
+
+  expect_equal(acti_sleep_hdcza(data)$epoch_data$angle, smoothed)
+})
+
+test_that("rollmedian smoothing warns once about gaps", {
+  sf <- 30
+  n <- sf * 60 * 10
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + (seq_len(n) - 1) / sf,
+    X = 0, Y = 0, Z = 1
+  )
+  attr(data, "sample_rate") <- sf
+  expect_no_warning(acti_sleep_sib(data))
+  gapped <- data[-(1000:2000), ]
+  attr(gapped, "sample_rate") <- sf
+  expect_warning(acti_sleep_sib(gapped), "1 gap")
+  expect_no_warning(acti_sleep_sib(gapped, smooth = "none"))
+  warnings <- character()
+  withCallingHandlers(
+    acti_sleep_ensemble(gapped),
+    warning = function(w) {
+      warnings <<- c(warnings, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_length(grep("gap", warnings), 1)
+})

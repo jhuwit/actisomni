@@ -10,7 +10,8 @@ acti_sleep_sib(
   epoch = "5 seconds",
   time_threshold_minutes = 5,
   angle_threshold = 5,
-  activity_threshold = 0
+  activity_threshold = 0,
+  smooth = c("rollmedian", "none")
 )
 }
 \arguments{
@@ -25,6 +26,14 @@ acti_sleep_sib(
 parameters.}
 
 \item{activity_threshold}{Low-activity cutoff for epoch data.}
+
+\item{smooth}{Smoothing of the raw axes before the angle is computed:
+\code{"rollmedian"} (the default) takes a five-second rolling median of each
+axis first, as described by van Hees et al. (2015, 2018) and implemented
+in GGIR, so angles agree with GGIR's \code{anglez}; \code{"none"} computes the
+angle from each raw sample, as in actisomni 0.3.0 and earlier.  The
+median is taken over samples, not time, so \code{"rollmedian"} warns when the
+timestamps have gaps; fill or resample such data first.}
 }
 \value{
 A tibble with \code{time}, \code{sib}, and supporting epoch-level variables.

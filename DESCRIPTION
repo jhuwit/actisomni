@@ -1,7 +1,7 @@
 Type: Package
 Package: actisomni
 Title: Create Sleep Measures of Actigraphy and Activity Analysis
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
     person(given = "John",
            family = "Muschelli",
@@ -47,7 +47,7 @@ Imports:
     assertthat,
     tibble,
     stats,
-    asleep,
+    asleep (>= 0.4.0),
     sleeper
 Config/roxygen2/version: 8.0.0
 URL: https://github.com/jhuwit/actisomni, https://jhuwit.github.io/actisomni/

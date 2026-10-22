@@ -11,6 +11,7 @@ acti_sleep_ensemble(
   sib_method = "vanHees2015",
   fusion = c("staple", "majority"),
   sleepwindow_type = c("SPT", "TimeInBed"),
+  smooth = c("rollmedian", "none"),
   ...
 )
 }
@@ -29,6 +30,14 @@ available.}
 \item{fusion}{Consensus rule: \code{"staple"} or \code{"majority"}.}
 
 \item{sleepwindow_type}{SPT or TimeInBed overlap rule.}
+
+\item{smooth}{Smoothing of the raw axes before the angle is computed:
+\code{"rollmedian"} (the default) takes a five-second rolling median of each
+axis first, as described by van Hees et al. (2015, 2018) and implemented
+in GGIR, so angles agree with GGIR's \code{anglez}; \code{"none"} computes the
+angle from each raw sample, as in actisomni 0.3.0 and earlier.  The
+median is taken over samples, not time, so \code{"rollmedian"} warns when the
+timestamps have gaps; fill or resample such data first.}
 
 \item{...}{Passed to the individual guider functions.}
 }
