@@ -18,6 +18,7 @@ acti_sleep_ensemble(
   sib_method = "vanHees2015",
   fusion = c("staple", "majority"),
   sleepwindow_type = c("SPT", "TimeInBed"),
+  smooth = c("rollmedian", "none"),
   ...
 )
 ```
@@ -52,6 +53,16 @@ acti_sleep_ensemble(
 - sleepwindow_type:
 
   SPT or TimeInBed overlap rule.
+
+- smooth:
+
+  Smoothing of the raw axes before the angle is computed: `"rollmedian"`
+  (the default) takes a five-second rolling median of each axis first,
+  as described by van Hees et al. (2015, 2018) and implemented in GGIR,
+  so angles agree with GGIR's `anglez`; `"none"` computes the angle from
+  each raw sample, as in actisomni 0.3.0 and earlier. The median is
+  taken over samples, not time, so `"rollmedian"` warns when the
+  timestamps have gaps; fill or resample such data first.
 
 - ...:
 

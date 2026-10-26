@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">actisomni</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,14 @@
       <small>Source: <a href="https://github.com/jhuwit/actisomni/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="actisomni-040">actisomni 0.4.0<a class="anchor" aria-label="anchor" href="#actisomni-040"></a></h2>
+<ul><li>
+<code><a href="../reference/acti_sleep_hdcza.html">acti_sleep_hdcza()</a></code>, <code><a href="../reference/acti_sleep_horangle.html">acti_sleep_horangle()</a></code>, <code><a href="../reference/acti_sleep_sib.html">acti_sleep_sib()</a></code>, and <code><a href="../reference/acti_sleep_ensemble.html">acti_sleep_ensemble()</a></code> gain a <code>smooth</code> argument. The default, <code>"rollmedian"</code>, takes a five-second rolling median of each raw axis before computing the angle, as described by van Hees et al. (2015, 2018) and implemented in GGIR’s <code>anglez</code>. This changes results: earlier versions computed the angle from each raw sample, which <code>smooth = "none"</code> restores. Smoothing warns when the timestamps have gaps, because the median window is counted in samples.</li>
+<li>
+<code><a href="../reference/acti_sleep_ensemble.html">acti_sleep_ensemble()</a></code> smooths the raw axes once and reuses them for every angle-based guider, so messages and warnings are no longer repeated.</li>
+<li>Requires asleep (&gt;= 0.4.0).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="actisomni-030">actisomni 0.3.0<a class="anchor" aria-label="anchor" href="#actisomni-030"></a></h2>
 <ul><li>

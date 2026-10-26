@@ -17,7 +17,7 @@ L5 when possible. Set guiders to choose a subset explicitly."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">actisomni</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@ requested duration. Epoch data use <code>NotWorn</code> and the fixed window, ad
 <span>  sib_method <span class="op">=</span> <span class="st">"vanHees2015"</span>,</span>
 <span>  fusion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"staple"</span>, <span class="st">"majority"</span><span class="op">)</span>,</span>
 <span>  sleepwindow_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SPT"</span>, <span class="st">"TimeInBed"</span><span class="op">)</span>,</span>
+<span>  smooth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rollmedian"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -94,6 +95,16 @@ available.</p></dd>
 
 <dt id="arg-sleepwindow-type">sleepwindow_type<a class="anchor" aria-label="anchor" href="#arg-sleepwindow-type"></a></dt>
 <dd><p>SPT or TimeInBed overlap rule.</p></dd>
+
+
+<dt id="arg-smooth">smooth<a class="anchor" aria-label="anchor" href="#arg-smooth"></a></dt>
+<dd><p>Smoothing of the raw axes before the angle is computed:
+<code>"rollmedian"</code> (the default) takes a five-second rolling median of each
+axis first, as described by van Hees et al. (2015, 2018) and implemented
+in GGIR, so angles agree with GGIR's <code>anglez</code>; <code>"none"</code> computes the
+angle from each raw sample, as in actisomni 0.3.0 and earlier.  The
+median is taken over samples, not time, so <code>"rollmedian"</code> warns when the
+timestamps have gaps; fill or resample such data first.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

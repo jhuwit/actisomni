@@ -16,7 +16,8 @@ acti_sleep_sib(
   epoch = "5 seconds",
   time_threshold_minutes = 5,
   angle_threshold = 5,
-  activity_threshold = 0
+  activity_threshold = 0,
+  smooth = c("rollmedian", "none")
 )
 ```
 
@@ -43,6 +44,16 @@ acti_sleep_sib(
 - activity_threshold:
 
   Low-activity cutoff for epoch data.
+
+- smooth:
+
+  Smoothing of the raw axes before the angle is computed: `"rollmedian"`
+  (the default) takes a five-second rolling median of each axis first,
+  as described by van Hees et al. (2015, 2018) and implemented in GGIR,
+  so angles agree with GGIR's `anglez`; `"none"` computes the angle from
+  each raw sample, as in actisomni 0.3.0 and earlier. The median is
+  taken over samples, not time, so `"rollmedian"` warns when the
+  timestamps have gaps; fill or resample such data first.
 
 ## Value
 

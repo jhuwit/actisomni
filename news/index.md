@@ -1,5 +1,24 @@
 # Changelog
 
+## actisomni 0.4.0
+
+- [`acti_sleep_hdcza()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_hdcza.md),
+  [`acti_sleep_horangle()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_horangle.md),
+  [`acti_sleep_sib()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_sib.md),
+  and
+  [`acti_sleep_ensemble()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_ensemble.md)
+  gain a `smooth` argument. The default, `"rollmedian"`, takes a
+  five-second rolling median of each raw axis before computing the
+  angle, as described by van Hees et al. (2015, 2018) and implemented in
+  GGIR’s `anglez`. This changes results: earlier versions computed the
+  angle from each raw sample, which `smooth = "none"` restores.
+  Smoothing warns when the timestamps have gaps, because the median
+  window is counted in samples.
+- [`acti_sleep_ensemble()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_ensemble.md)
+  smooths the raw axes once and reuses them for every angle-based
+  guider, so messages and warnings are no longer repeated.
+- Requires asleep (\>= 0.4.0).
+
 ## actisomni 0.3.0
 
 - [`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
