@@ -1,6 +1,15 @@
 # Changelog
 
+## actisomni 0.5.0
+
+- Imports `actiread` with `except = "tzoffset_to_tz"`, so `actibase` can
+  export
+  [`tzoffset_to_tz()`](https://jhuwit.github.io/actiread/reference/tzoffset_to_tz.html)
+  later without an import conflict.
+
 ## actisomni 0.4.0
+
+CRAN release: 2026-10-26
 
 - [`acti_sleep_hdcza()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_hdcza.md),
   [`acti_sleep_horangle()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_horangle.md),

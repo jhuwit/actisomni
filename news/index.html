@@ -33,7 +33,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.0" id="actisomni-040">actisomni 0.4.0<a class="anchor" aria-label="anchor" href="#actisomni-040"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.5.0" id="actisomni-050">actisomni 0.5.0<a class="anchor" aria-label="anchor" href="#actisomni-050"></a></h2>
+<ul><li>Imports <code>actiread</code> with <code>except = "tzoffset_to_tz"</code>, so <code>actibase</code> can export <code><a href="https://jhuwit.github.io/actiread/reference/tzoffset_to_tz.html" class="external-link">tzoffset_to_tz()</a></code> later without an import conflict.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="actisomni-040">actisomni 0.4.0<a class="anchor" aria-label="anchor" href="#actisomni-040"></a></h2><p class="text-muted">CRAN release: 2026-10-26</p>
 <ul><li>
 <code><a href="../reference/acti_sleep_hdcza.html">acti_sleep_hdcza()</a></code>, <code><a href="../reference/acti_sleep_horangle.html">acti_sleep_horangle()</a></code>, <code><a href="../reference/acti_sleep_sib.html">acti_sleep_sib()</a></code>, and <code><a href="../reference/acti_sleep_ensemble.html">acti_sleep_ensemble()</a></code> gain a <code>smooth</code> argument. The default, <code>"rollmedian"</code>, takes a five-second rolling median of each raw axis before computing the angle, as described by van Hees et al. (2015, 2018) and implemented in GGIR’s <code>anglez</code>. This changes results: earlier versions computed the angle from each raw sample, which <code>smooth = "none"</code> restores. Smoothing warns when the timestamps have gaps, because the median window is counted in samples.</li>
 <li>
