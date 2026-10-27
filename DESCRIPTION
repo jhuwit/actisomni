@@ -14,8 +14,8 @@ Description: Estimates sleep from wrist accelerometry and epoch-level activity
     least-active periods, sustained inactivity, low activity, and diary or
     fixed time windows; combines guider windows with sustained-inactivity bouts
     to produce sleep/wake labels and consensus estimates. Provides diary
-    helpers, and interfaces to the 'asleep' and 'sleeper' machine-learning
-    estimators. The angle-based and
+    helpers, and interfaces to the 'asleep', 'sleeper', and 'rester'
+    machine-learning estimators. The angle-based and
     sustained-inactivity methods are described by van Hees et al. (2015)
     <doi:10.1371/journal.pone.0142533> and van Hees et al. (2018)
     <doi:10.1038/s41598-018-31266-z>; the model estimators are described by
@@ -37,7 +37,8 @@ Suggests:
     callr,
     GGIR,
     rlang,
-    actimetrics
+    actimetrics,
+    rester
 Encoding: UTF-8
 Imports: 
     actibase (>= 0.8.0),
@@ -53,3 +54,4 @@ Config/roxygen2/version: 8.1.1
 URL: https://github.com/jhuwit/actisomni, https://jhuwit.github.io/actisomni/
 BugReports: https://github.com/jhuwit/actisomni/issues
 Config/testthat/edition: 3
+Remotes: jhuwit/rester

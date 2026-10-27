@@ -252,4 +252,112 @@ test_that("model wrappers reject incomplete or unordered acceleration data", {
   )
   expect_error(acti_asleep(data, verbose = FALSE), "complete")
   expect_error(acti_sleeper(data, model_dir = tempdir()), "complete")
+  skip_if_not_installed("rester")
+  expect_error(acti_rester(data), "complete")
+})
+
+# Mock rester output for `n` 30-second epochs starting at `start_time`
+rester_predictions <- function(start_time, prediction) {
+  n <- length(prediction)
+  prob_wake <- ifelse(prediction == "wake", 0.9, 0.1)
+  prob_wake[is.na(prediction)] <- NA_real_
+  list(linear_sleepstages = tibble::tibble(
+    epoch = seq_len(n),
+    time = start_time + (seq_len(n) - 1) * 30,
+    prob_deep = 0, prob_light = 1 - prob_wake, prob_rem = 0,
+    prob_wake = prob_wake,
+    prediction = factor(prediction, levels = c("deep", "light", "rem", "wake"))
+  ))
+}
+
+test_that("acti_rester supplies required input and harmonizes predictions", {
+  skip_if_not_installed("rester")
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + 0:2 * 10,
+    X = c(0, 0.1, 0.2), Y = c(0, 0.1, 0.2), Z = c(1, 1, 1)
+  )
+  testthat::local_mocked_bindings(
+    estimate_rest = function(file, model, sample_rate, ...) {
+      expect_named(file, c("time", "X", "Y", "Z"))
+      expect_equal(model, "linear_sleepstages")
+      expect_equal(sample_rate, 0.1)
+      rester_predictions(file$time[1], c("wake", "light", NA))
+    },
+    .package = "rester"
+  )
+
+  out <- acti_rester(data)
+  expect_s3_class(out, "acti_sleep_estimate")
+  expect_named(out, c("time", "sleep", "sleep_probability", "sleep_stage", "nonwear", "method"))
+  expect_equal(out$sleep, c(FALSE, TRUE, NA))
+  expect_equal(out$sleep_probability, c(0.1, 0.9, NA))
+  expect_equal(out$sleep_stage, c("wake", "light", NA))
+  expect_equal(out$nonwear, rep(FALSE, 3))
+  expect_equal(out$method, rep("rester", 3))
+})
+
+test_that("acti_rester returns exact times across DST transitions", {
+  skip_if_not_installed("rester")
+  data <- data.frame(
+    time = as.POSIXct("2023-10-29 00:00:00", tz = "Europe/London") + 0:7 * 30,
+    X = 0, Y = 0, Z = 1
+  )
+  attr(data, "sample_rate") <- 1 / 30
+  seen <- NULL
+  testthat::local_mocked_bindings(
+    estimate_rest = function(file, sample_rate, ...) {
+      seen <<- file$time
+      expect_equal(sample_rate, 1 / 30)
+      rester_predictions(file$time[1], rep("deep", nrow(file)))
+    },
+    .package = "rester"
+  )
+  out <- acti_rester(data)
+  expect_equal(format(seen[1]), format(data$time[1]))
+  expect_equal(attr(out$time, "tzone"), "Europe/London")
+  expect_equal(out$time, data$time)
+  expect_equal(acti_rester(data, tz = "UTC")$time,
+               lubridate::with_tz(data$time, "UTC"))
+})
+
+test_that("acti_rester passes file paths through and rejects .h5 files", {
+  skip_if_not_installed("rester")
+  path <- tempfile(fileext = ".cwa")
+  file.create(path)
+  start <- as.POSIXct("2020-01-01", tz = "America/New_York")
+  testthat::local_mocked_bindings(
+    estimate_rest = function(file, model, ...) {
+      expect_equal(file, path)
+      expect_equal(model, "lstm_sleepstages")
+      out <- rester_predictions(start, "rem")
+      names(out) <- model
+      out
+    },
+    .package = "rester"
+  )
+  out <- acti_rester(path, model = "lstm_sleepstages")
+  expect_equal(out$time, start)
+  expect_true(out$sleep)
+
+  h5 <- tempfile(fileext = ".h5")
+  file.create(h5)
+  expect_error(acti_rester(h5), "time stamps")
+})
+
+test_that("py_acti_rester calls the isolated rester backend", {
+  skip_if_not_installed("rester")
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + 0:2,
+    X = c(0, 0.1, 0.2), Y = c(0, 0.1, 0.2), Z = c(1, 1, 1)
+  )
+  testthat::local_mocked_bindings(
+    py_estimate_rest = function(file, ..., pyenv_function, show) {
+      expect_named(file, c("time", "X", "Y", "Z"))
+      rester_predictions(file$time[1], "light")
+    },
+    .package = "rester"
+  )
+  out <- py_acti_rester(data)
+  expect_s3_class(out, "acti_sleep_estimate")
+  expect_true(out$sleep)
 })

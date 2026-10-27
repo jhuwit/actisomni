@@ -1,3 +1,10 @@
+# actisomni (development version)
+
+* New `acti_rester()` and `py_acti_rester()` estimate sleep with the
+  AcceleRest model from the 'rester' package (in Suggests). They return the
+  common `acti_sleep_estimate` format, with sleep stages and sleep
+  probabilities (one minus the probability of wake).
+
 # actisomni 0.4.0
 
 * `acti_sleep_hdcza()`, `acti_sleep_horangle()`, `acti_sleep_sib()`, and
