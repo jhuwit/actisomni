@@ -1,3 +1,8 @@
+# actisomni 0.5.0
+
+* Imports `actiread` with `except = "tzoffset_to_tz"`, so `actibase` can
+  export `tzoffset_to_tz()` later without an import conflict.
+
 # actisomni 0.4.0
 
 * `acti_sleep_hdcza()`, `acti_sleep_horangle()`, `acti_sleep_sib()`, and
