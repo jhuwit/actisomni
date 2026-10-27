@@ -1,4 +1,4 @@
-# actisomni (development version)
+# actisomni 0.5.0
 
 * New `acti_rester()` and `py_acti_rester()` estimate sleep with the
   AcceleRest model from the 'rester' package (in Suggests). They return the
