@@ -1,5 +1,5 @@
 #' @import actibase
-#' @import actiread
+#' @rawNamespace import(actiread, except = "tzoffset_to_tz")
 #' @importFrom dplyr .data
 #' @import stats
 NULL

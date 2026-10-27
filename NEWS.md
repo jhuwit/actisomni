@@ -5,6 +5,9 @@
   common `acti_sleep_estimate` format, with sleep stages and sleep
   probabilities (one minus the probability of wake).
 
+* Imports `actiread` with `except = "tzoffset_to_tz"`, so `actibase` can
+  export `tzoffset_to_tz()` later without an import conflict.
+
 # actisomni 0.4.0
 
 * `acti_sleep_hdcza()`, `acti_sleep_horangle()`, `acti_sleep_sib()`, and
