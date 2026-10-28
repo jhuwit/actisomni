@@ -331,3 +331,147 @@ py_acti_sleeper <- function(data, epoch = 30L, model_dir,
   }
   .acti_sleep_sleeper_result(predictions)
 }
+
+.acti_sleep_rester_input <- function(data) {
+  if (!is.character(data)) return(.acti_sleep_model_input(data))
+  assertthat::assert_that(
+    assertthat::is.string(data), assertthat::is.readable(data),
+    msg = "A file input must be one readable accelerometry file path."
+  )
+  assertthat::assert_that(
+    !grepl("[.]h5([.](gz|bz2|xz))?$", data, ignore.case = TRUE),
+    msg = "`.h5` files have no time stamps, so they cannot be used here."
+  )
+  data
+}
+
+# Prepare the input for rester. Data frames get the same fixed clock as asleep,
+# because actipy resamples on naive local clock times. The sample rate is found
+# before standardizing, which drops a `sample_rate` attribute.
+.acti_sleep_rester_prepare <- function(data, sample_rate = NULL, tz = NULL) {
+  input <- data
+  data <- .acti_sleep_rester_input(data)
+  if (!is.data.frame(data)) {
+    return(list(data = data, sample_rate = sample_rate, tz = tz, offset = NULL))
+  }
+  sample_rate <- actibase::get_sample_rate(input, sample_rate = sample_rate)
+  tz <- .acti_sleep_input_tz(data, tz)
+  clock <- .acti_sleep_fixed_clock(data, tz)
+  list(data = clock$data, sample_rate = sample_rate, tz = tz,
+       offset = clock$offset)
+}
+
+.acti_sleep_rester_result <- function(result, model, tz = NULL, offset = NULL) {
+  predictions <- result[[model]]
+  assertthat::assert_that(
+    is.data.frame(predictions),
+    all(c("time", "prediction", "prob_wake") %in% names(predictions)),
+    msg = paste0("`rester` did not return a `", model, "` data frame with ",
+                 "`time`, `prediction`, and `prob_wake`.")
+  )
+  time <- .acti_sleep_model_time(predictions$time)
+  if (!is.null(offset)) {
+    # Data-frame input: undo the fixed offset applied to the input clock
+    time <- lubridate::force_tz(time, "UTC") - offset
+  }
+  if (!is.null(tz)) time <- lubridate::with_tz(time, tz)
+  stage <- tolower(trimws(as.character(predictions$prediction)))
+  .acti_sleep_model_result(
+    time = time,
+    sleep = stage != "wake",
+    sleep_probability = 1 - as.numeric(predictions$prob_wake),
+    sleep_stage = stage,
+    method = "rester"
+  )
+}
+
+#' Estimate sleep with the rester (AcceleRest) model
+#'
+#' Runs [rester::estimate_rest()] on complete, time-ordered raw triaxial
+#' acceleration and converts the sleep-stage predictions of the AcceleRest
+#' model to the common `acti_sleep_estimate` format. AcceleRest predicts 30
+#' second epochs over context windows of 256 epochs (about 2.1 hours), so at
+#' least that much data is needed.
+#'
+#' @param data A data frame containing timestamps and triaxial acceleration, or
+#'   a readable accelerometry file path (`.cwa`, `.gt3x`, `.bin`, or CSV),
+#'   passed unchanged to [rester::estimate_rest()].
+#' @param model The sleep-stage prediction head, `"linear_sleepstages"` or
+#'   `"lstm_sleepstages"`.
+#' @param cache_dir Directory with the downloaded AcceleRest code and weights;
+#'   see [rester::ar_setup()].
+#' @param context_window_shift Number of 30-second epochs to shift consecutive
+#'   context windows. Smaller is slower but averages over more windows.
+#' @param max_batch_size Number of context windows per forward pass.
+#' @param device `torch` device, e.g. `"cpu"`, `"cuda"`, or `"mps"`. If `NULL`,
+#'   `rester` uses `"cuda"` if available, otherwise `"cpu"`.
+#' @param sample_rate Optional input sample rate (Hz). If `NULL`, it is found
+#'   with [actibase::get_sample_rate()].
+#' @param tz Time zone of the returned times. By default the time zone of
+#'   `data$time`, or the time zone `rester` reads a file in. For data-frame
+#'   input, the clock passed to `rester` is held at the UTC offset in effect at
+#'   the start of the recording, as in [acti_asleep()], and the returned times
+#'   are exact instants shown in `tz`.
+#' @param ... Additional arguments passed to [rester::ar_read()], such as
+#'   `fill_zeros` or `detect_nonwear`.
+#' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
+#'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. `sleep` is
+#'   `TRUE` for deep, light, and REM epochs, `sleep_probability` is one minus
+#'   the probability of wake, and `sleep_stage` is the most probable of
+#'   `"deep"`, `"light"`, `"rem"`, and `"wake"`. Epochs without valid data
+#'   (gaps, or non-wear when `detect_nonwear = TRUE`) have `NA` for `sleep`,
+#'   `sleep_probability`, and `sleep_stage`; `nonwear` is always `FALSE`.
+#' @export
+acti_rester <- function(data,
+                        model = c("linear_sleepstages", "lstm_sleepstages"),
+                        cache_dir = rester::ar_cache_dir(),
+                        context_window_shift = 1L, max_batch_size = 16L,
+                        device = NULL, sample_rate = NULL, tz = NULL, ...) {
+  rlang::check_installed("rester")
+  model <- match.arg(model)
+  input <- .acti_sleep_rester_prepare(data, sample_rate = sample_rate, tz = tz)
+  result <- rester::estimate_rest(
+    file = input$data, model = model, cache_dir = cache_dir,
+    context_window_shift = context_window_shift,
+    max_batch_size = max_batch_size, device = device,
+    sample_rate = input$sample_rate, ...
+  )
+  if (Sys.getenv("NOT_CRAN") != "true") {
+    on.exit(cleanup_uv_lock_files(), add = TRUE)
+  }
+  .acti_sleep_rester_result(result, model, tz = input$tz, offset = input$offset)
+}
+
+#' Estimate sleep with rester in an isolated Python process
+#'
+#' Uses [rester::py_estimate_rest()] to run the same AcceleRest model as
+#' [acti_rester()] in a `callr` subprocess. This keeps Python package
+#' requirements separate from the current R session.
+#'
+#' @inheritParams acti_rester
+#' @param pyenv_function Function that configures Python in the subprocess.
+#' @param show Whether to stream subprocess output.
+#' @return An `acti_sleep_estimate` tibble; see [acti_rester()].
+#' @export
+py_acti_rester <- function(data,
+                           model = c("linear_sleepstages", "lstm_sleepstages"),
+                           cache_dir = rester::ar_cache_dir(),
+                           context_window_shift = 1L, max_batch_size = 16L,
+                           device = NULL, sample_rate = NULL, tz = NULL, ...,
+                           pyenv_function = function() rester::py_require_rester(),
+                           show = FALSE) {
+  rlang::check_installed(c("rester", "callr"))
+  model <- match.arg(model)
+  input <- .acti_sleep_rester_prepare(data, sample_rate = sample_rate, tz = tz)
+  result <- rester::py_estimate_rest(
+    file = input$data, model = model, cache_dir = cache_dir,
+    context_window_shift = context_window_shift,
+    max_batch_size = max_batch_size, device = device,
+    sample_rate = input$sample_rate, ...,
+    pyenv_function = pyenv_function, show = show
+  )
+  if (Sys.getenv("NOT_CRAN") != "true") {
+    on.exit(cleanup_uv_lock_files(), add = TRUE)
+  }
+  .acti_sleep_rester_result(result, model, tz = input$tz, offset = input$offset)
+}

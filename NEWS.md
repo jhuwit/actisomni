@@ -1,5 +1,10 @@
 # actisomni 0.5.0
 
+* New `acti_rester()` and `py_acti_rester()` estimate sleep with the
+  AcceleRest model from the 'rester' package (in Suggests). They return the
+  common `acti_sleep_estimate` format, with sleep stages and sleep
+  probabilities (one minus the probability of wake).
+
 * Imports `actiread` with `except = "tzoffset_to_tz"`, so `actibase` can
   export `tzoffset_to_tz()` later without an import conflict.
 
