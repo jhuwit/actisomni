@@ -6,6 +6,7 @@ output: github_document
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/jhuwit/actisomni/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jhuwit/actisomni/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/jhuwit/actisomni/branch/main/graph/badge.svg)](https://app.codecov.io/gh/jhuwit/actisomni?branch=main)
+[![CRAN status](https://www.r-pkg.org/badges/version/actisomni)](https://CRAN.R-project.org/package=actisomni)
 <!-- badges: end -->
 
 ```{r setup, include = FALSE}
