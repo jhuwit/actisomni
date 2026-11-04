@@ -1,3 +1,11 @@
+# actisomni (development version)
+
+* New `acti_rester()` and `py_acti_rester()` estimate sleep and sleep stages
+  (deep, light, REM, wake) with the AcceleRest model from the `rester`
+  package (Lorenzen et al., 2026), returning the common
+  `acti_sleep_estimate` format. Data-frame input is passed with a fixed
+  clock so returned times are exact across daylight-saving transitions.
+
 # actisomni 0.5.0
 
 * Imports `actiread` with `except = "tzoffset_to_tz"`, so `actibase` can
