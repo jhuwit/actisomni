@@ -7,6 +7,7 @@
 py_acti_rester(
   data,
   model = c("lstm_sleepstages", "linear_sleepstages"),
+  sample_rate = NULL,
   tz = NULL,
   cache_dir = rester::ar_cache_dir(),
   context_window_shift = 1L,
@@ -25,6 +26,10 @@ are passed unchanged to \code{\link[rester:estimate_rest]{rester::estimate_rest(
 
 \item{model}{The sleep-stage head to use: \code{"lstm_sleepstages"} (default)
 or \code{"linear_sleepstages"}.}
+
+\item{sample_rate}{Sample rate (Hz) of the input. If \code{NULL}, it is found
+with \code{\link[actibase:get_sample_rate]{actibase::get_sample_rate()}} (from the \code{sample_rate} attribute,
+the header, or the time stamps).}
 
 \item{tz}{Time zone of the returned times. By default the time zone of
 \code{data$time}, or the time zone of the times read from a file.
@@ -50,7 +55,7 @@ consecutive context windows; see \code{\link[rester:estimate_rest]{rester::estim
 \item{show}{Whether to stream subprocess output.}
 
 \item{...}{Additional arguments passed to \code{\link[rester:ar_read]{rester::ar_read()}}, such as
-\code{sample_rate}, \code{fill_zeros}, \code{detect_nonwear}, or \code{verbose}.}
+\code{fill_zeros}, \code{detect_nonwear}, or \code{verbose}.}
 }
 \value{
 An \code{acti_sleep_estimate} tibble; see \code{\link[=acti_rester]{acti_rester()}}.

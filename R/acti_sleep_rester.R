@@ -1,7 +1,5 @@
 # AcceleRest (rester) sleep-stage wrappers ------------------------------------
 
-.acti_sleep_rester_models <- c("lstm_sleepstages", "linear_sleepstages")
-
 .acti_sleep_rester_input <- function(data) {
   if (is.character(data)) {
     data <- .acti_sleep_asleep_input(data)
@@ -12,28 +10,30 @@
     )
     return(data)
   }
-  sample_rate <- attr(data, "sample_rate")
-  data <- .acti_sleep_model_input(data)
-  attr(data, "sample_rate") <- sample_rate
-  data
+  .acti_sleep_model_input(data)
 }
 
 # Set up the input passed to rester. Data frames get a fixed clock (see
-# `.acti_sleep_fixed_clock()`), as `actipy` works on naive clock times.
-.acti_sleep_rester_prepare <- function(data, tz = NULL) {
+# `.acti_sleep_fixed_clock()`), as `actipy` works on naive clock times. The
+# sample rate is found before standardizing, which drops a `sample_rate`
+# attribute.
+.acti_sleep_rester_prepare <- function(data, sample_rate = NULL, tz = NULL) {
+  input <- data
   data <- .acti_sleep_rester_input(data)
-  offset <- NULL
-  if (is.data.frame(data)) {
-    tz <- .acti_sleep_input_tz(data, tz)
-    sample_rate <- attr(data, "sample_rate")
-    clock <- .acti_sleep_fixed_clock(data, tz)
-    data <- clock$data
-    attr(data, "sample_rate") <- sample_rate
-    offset <- clock$offset
-  } else if (!is.null(tz)) {
-    tz <- .acti_sleep_input_tz(data, tz)
+  if (!is.data.frame(data)) {
+    if (!is.null(tz)) tz <- .acti_sleep_input_tz(data, tz)
+    return(list(data = data, sample_rate = sample_rate, tz = tz,
+                offset = NULL))
   }
-  list(data = data, tz = tz, offset = offset)
+  sample_rate <- actibase::get_sample_rate(input, sample_rate = sample_rate)
+  assertthat::assert_that(
+    assertthat::is.number(sample_rate), sample_rate > 0,
+    msg = "`sample_rate` must be one positive number."
+  )
+  tz <- .acti_sleep_input_tz(data, tz)
+  clock <- .acti_sleep_fixed_clock(data, tz)
+  list(data = clock$data, sample_rate = sample_rate, tz = tz,
+       offset = clock$offset)
 }
 
 .acti_sleep_rester_result <- function(result, model, tz = NULL,
@@ -82,6 +82,9 @@
 #'   are passed unchanged to [rester::estimate_rest()].
 #' @param model The sleep-stage head to use: `"lstm_sleepstages"` (default)
 #'   or `"linear_sleepstages"`.
+#' @param sample_rate Sample rate (Hz) of the input. If `NULL`, it is found
+#'   with [actibase::get_sample_rate()] (from the `sample_rate` attribute,
+#'   the header, or the time stamps).
 #' @param tz Time zone of the returned times. By default the time zone of
 #'   `data$time`, or the time zone of the times read from a file.
 #'
@@ -97,7 +100,7 @@
 #' @param device `torch` device, e.g. `"cpu"`, `"cuda"`, or `"mps"`. If
 #'   `NULL`, `rester` chooses.
 #' @param ... Additional arguments passed to [rester::ar_read()], such as
-#'   `sample_rate`, `fill_zeros`, `detect_nonwear`, or `verbose`.
+#'   `fill_zeros`, `detect_nonwear`, or `verbose`.
 #' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
 #'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`.
 #'   `sleep_probability` is one minus the probability of wake, `sleep_stage`
@@ -123,15 +126,17 @@
 #' }
 acti_rester <- function(data, model = c("lstm_sleepstages",
                                         "linear_sleepstages"),
-                        tz = NULL, cache_dir = rester::ar_cache_dir(),
+                        sample_rate = NULL, tz = NULL,
+                        cache_dir = rester::ar_cache_dir(),
                         context_window_shift = 1L, max_batch_size = 16L,
                         device = NULL, ...) {
   model <- match.arg(model)
-  input <- .acti_sleep_rester_prepare(data, tz)
+  input <- .acti_sleep_rester_prepare(data, sample_rate = sample_rate, tz = tz)
   result <- rester::estimate_rest(
     file = input$data, model = model, cache_dir = cache_dir,
     context_window_shift = context_window_shift,
-    max_batch_size = max_batch_size, device = device, ...
+    max_batch_size = max_batch_size, device = device,
+    sample_rate = input$sample_rate, ...
   )
   if (Sys.getenv("NOT_CRAN") != "true") {
     on.exit(cleanup_uv_lock_files(), add = TRUE)
@@ -153,17 +158,19 @@ acti_rester <- function(data, model = c("lstm_sleepstages",
 #' @export
 py_acti_rester <- function(data, model = c("lstm_sleepstages",
                                            "linear_sleepstages"),
-                           tz = NULL, cache_dir = rester::ar_cache_dir(),
+                           sample_rate = NULL, tz = NULL,
+                        cache_dir = rester::ar_cache_dir(),
                            context_window_shift = 1L, max_batch_size = 16L,
                            device = NULL,
                            pyenv_function = function() rester::py_require_rester(),
                            show = FALSE, ...) {
   model <- match.arg(model)
-  input <- .acti_sleep_rester_prepare(data, tz)
+  input <- .acti_sleep_rester_prepare(data, sample_rate = sample_rate, tz = tz)
   result <- rester::py_estimate_rest(
     file = input$data, model = model, cache_dir = cache_dir,
     context_window_shift = context_window_shift,
-    max_batch_size = max_batch_size, device = device, ...,
+    max_batch_size = max_batch_size, device = device,
+    sample_rate = input$sample_rate, ...,
     pyenv_function = pyenv_function, show = show
   )
   if (Sys.getenv("NOT_CRAN") != "true") {

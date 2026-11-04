@@ -46,7 +46,7 @@ test_that("acti_rester harmonizes sleep-stage predictions", {
                       "nonwear", "method"))
   expect_equal(seen$model, "lstm_sleepstages")
   expect_named(seen$file, c("time", "X", "Y", "Z"))
-  expect_equal(attr(seen$file, "sample_rate"), 1 / 30)
+  expect_equal(seen$dots$sample_rate, 1 / 30)
   expect_equal(out$sleep, c(FALSE, TRUE, TRUE, NA, TRUE))
   expect_equal(out$sleep_stage, c("wake", "light", "deep", NA, "rem"))
   expect_equal(out$sleep_probability, c(0.3, 0.9, 0.9, NA, 0.9))
@@ -54,6 +54,23 @@ test_that("acti_rester harmonizes sleep-stage predictions", {
   expect_equal(out$method, rep("rester_lstm_sleepstages", 5))
   expect_equal(out$time, data$time[1] + 0:4 * 30)
   expect_equal(attr(out, "info"), list(ResampleRate = 30))
+})
+
+test_that("acti_rester finds or uses the sample rate", {
+  data <- rester_data()
+  seen <- NULL
+  testthat::local_mocked_bindings(
+    estimate_rest = function(file, model, sample_rate, ...) {
+      seen <<- c(seen, sample_rate)
+      rester_predictions(file$time[1], "light")
+    },
+    .package = "rester"
+  )
+  acti_rester(data, cache_dir = tempdir(), sample_rate = 30)
+  attr(data, "sample_rate") <- NULL
+  acti_rester(data, cache_dir = tempdir())
+  expect_equal(seen, c(30, 1 / 30))
+  expect_error(acti_rester(data, cache_dir = tempdir(), sample_rate = -1))
 })
 
 test_that("acti_rester selects the linear head and passes arguments", {
