@@ -14,8 +14,6 @@ warning in 'actisomni'. We will space out future updates.
 
 0 errors | 0 warnings | 1 note
 
-* Days since last update: 9 (see above).
-
 ## Reverse dependencies
 
 There are no reverse dependencies on CRAN.
