@@ -250,7 +250,7 @@
 #'   timestamps have gaps; fill or resample such data first.
 #' @return An `acti_sleep_guider` object. `window` is the selected SPT guider;
 #'   `crude_window` retains all candidate blocks before choosing the longest.
-#' @examples
+#' @examplesIf requireNamespace("actiread", quietly = TRUE)
 #' \donttest{
 #' # The bundled actiread recording contains raw X, Y, and Z acceleration.
 #' raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
@@ -363,7 +363,7 @@ acti_sleep_hdcza <- function(data, epoch = "5 seconds", threshold = NULL,
 #' @param horizontal_threshold Absolute-angle limit defining horizontal posture.
 #' @param longitudinal_axis Raw axis used as the longitudinal axis: `"X"`,
 #'   `"Y"`, or `"Z"`.
-#' @examples
+#' @examplesIf requireNamespace("actiread", quietly = TRUE)
 #' \donttest{
 #' raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 #' horizontal <- acti_sleep_horangle(raw, epoch = "5 seconds")
@@ -863,7 +863,7 @@ acti_sleep_fuse_labels <- function(labels, threshold = 0.5, tolerance = 1e-6,
 #' @param activity_threshold Low-activity cutoff for epoch data.
 #' @inheritParams acti_sleep_hdcza
 #' @return A tibble with `time`, `sib`, and supporting epoch-level variables.
-#' @examples
+#' @examplesIf requireNamespace("actiread", quietly = TRUE)
 #' \donttest{
 #' raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 #' sib <- acti_sleep_sib(raw)
@@ -925,7 +925,7 @@ acti_sleep_sib <- function(data, method = c("vanHees2015", "low_activity"),
 #'   `labels` has `time` plus one logical `sleep_<guider>` column per guider;
 #'   `fused` has `time`, probability, and consensus label; and `label_data`
 #'   combines all these analysis columns.
-#' @examples
+#' @examplesIf requireNamespace("actiread", quietly = TRUE)
 #' \donttest{
 #' raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 #' result <- acti_sleep_ensemble(raw)

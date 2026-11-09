@@ -46,8 +46,10 @@ provide a precomputed \code{sib} column; alternatively, \code{"low_activity"} ma
 epochs whose conventional activity metric is at or below \code{activity_threshold}.
 }
 \examples{
+\dontshow{if (requireNamespace("actiread", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 \donttest{
 raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 sib <- acti_sleep_sib(raw)
 }
+\dontshow{\}) # examplesIf}
 }
