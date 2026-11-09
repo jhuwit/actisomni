@@ -1,4 +1,5 @@
 test_that("actiread data can run through raw sleep preprocessing", {
+  testthat::skip_if_not_installed("actiread")
   raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
   raw <- raw[seq_len(min(nrow(raw), 7200L)), ]
   out <- acti_sleep_sib(raw, epoch = "5 seconds")

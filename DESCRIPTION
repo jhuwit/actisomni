@@ -37,11 +37,11 @@ Suggests:
     callr,
     GGIR,
     rlang,
-    actimetrics
+    actimetrics,
+    actiread
 Encoding: UTF-8
 Imports: 
     actibase (>= 0.8.0),
-    actiread,
     dplyr,
     lubridate,
     assertthat,

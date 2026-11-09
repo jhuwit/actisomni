@@ -51,8 +51,10 @@ limit, and \code{epoch_data} contains the averaged angle and invalid flag.
 Identify a sleep window from horizontal posture
 }
 \examples{
+\dontshow{if (requireNamespace("actiread", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 \donttest{
 raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 horizontal <- acti_sleep_horangle(raw, epoch = "5 seconds")
 }
+\dontshow{\}) # examplesIf}
 }

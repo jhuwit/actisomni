@@ -66,9 +66,11 @@ GGIR's \code{HDCZA_threshold = c(p, m)} corresponds to
 \verb{threshold_percentile = p, threshold_multiplier = m}.
 }
 \examples{
+\dontshow{if (requireNamespace("actiread", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 \donttest{
 # The bundled actiread recording contains raw X, Y, and Z acceleration.
 raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 hdcza <- acti_sleep_hdcza(raw, epoch = "5 seconds")
 }
+\dontshow{\}) # examplesIf}
 }
