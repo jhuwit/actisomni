@@ -1,20 +1,18 @@
+## Submission
+
+This update stops importing the whole 'actiread' namespace and instead uses
+`import(actiread, except = "tzoffset_to_tz")`. 'actisomni' does not use
+`tzoffset_to_tz()`. The change lets 'actibase', which 'actisomni' also
+imports, export `tzoffset_to_tz()` in a future release without causing a
+"replacing previous import" warning when 'actisomni' is installed.
+
+We know 0.4.0 was published recently (2026-10-26). We are submitting this
+update now so the next 'actibase' release does not trigger an install
+warning in 'actisomni'. We will space out future updates.
+
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
-
-* This update fixes problems found after the
-  0.2.0 release:
-  * `acti_asleep()` and `py_acti_asleep()` returned prediction times shifted
-    by the input's UTC offset (e.g. one hour for British Summer Time), and
-    mis-aligned predictions across daylight-saving transitions. The fix
-    relies on asleep 0.4.0, which is now on CRAN and required.
-  * `acti_sleep_hdcza()` now uses GGIR's data-driven default threshold and
-    errors clearly, instead of returning missing values, for epochs too
-    coarse for its five-minute window.
-  * The angle-based sleep guiders now take a five-second rolling median of
-    each raw axis before computing the angle, as described by van Hees et al.
-    (2015, 2018) and implemented in GGIR. This changes results; the previous
-    behaviour is available with `smooth = "none"`.
 
 ## Reverse dependencies
 

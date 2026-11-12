@@ -38,11 +38,11 @@ Suggests:
     GGIR,
     rlang,
     actimetrics,
+    actiread,
     rester
 Encoding: UTF-8
 Imports: 
     actibase (>= 0.8.0),
-    actiread,
     dplyr,
     lubridate,
     assertthat,

@@ -57,8 +57,10 @@ requested duration. Epoch data use \code{NotWorn} and the fixed window, adding
 \code{L5} when possible. Set \code{guiders} to choose a subset explicitly.
 }
 \examples{
+\dontshow{if (requireNamespace("actiread", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 \donttest{
 raw <- actiread::acti_read_gt3x(actiread::acti_example_gt3x(), verbose = FALSE)
 result <- acti_sleep_ensemble(raw)
 }
+\dontshow{\}) # examplesIf}
 }

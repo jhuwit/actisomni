@@ -1,12 +1,9 @@
 # actisomni 0.5.0
 
-* New `acti_rester()` and `py_acti_rester()` estimate sleep with the
-  AcceleRest model from the 'rester' package (in Suggests). They return the
-  common `acti_sleep_estimate` format, with sleep stages and sleep
-  probabilities (one minus the probability of wake).
-
-* Imports `actiread` with `except = "tzoffset_to_tz"`, so `actibase` can
-  export `tzoffset_to_tz()` later without an import conflict.
+* 'actiread' moved from Imports to Suggests. No package code used it; it is
+  only needed for examples and one test. This drops actiread, GGIRread,
+  read.gt3x, R.utils, janitor, data.table, readxl, and others from a default
+  install (62 -> 47 recursive hard dependencies).
 
 # actisomni 0.4.0
 
