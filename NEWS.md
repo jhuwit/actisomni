@@ -1,5 +1,15 @@
 # actisomni 0.5.0
 
+* `acti_sleep_hdcza()`, `acti_sleep_horangle()`, `acti_sleep_sib()`, and
+  `acti_sleep_ensemble()` gain `smooth = "rollmedian_full"`, a five-second
+  rolling median over every sample. The default, `"rollmedian"`, is
+  unchanged: like GGIR it uses every `floor(sample_rate / 10)`-th sample, so
+  angles, and the HDCZA window, can change with the sample at which the data
+  start (e.g. after subsetting to wear time). `"rollmedian_full"` removes this
+  dependence but no longer matches GGIR's `anglez` exactly.
+* New aliases `py_acti_calculate_asleep()`, `acti_calculate_sleeper()`, and
+  `py_acti_calculate_sleeper()` complete the `acti_calculate_*()` naming
+  already used by `acti_calculate_asleep()`.
 * 'actiread' moved from Imports to Suggests. No package code used it; it is
   only needed for examples and one test. This drops actiread, GGIRread,
   read.gt3x, R.utils, janitor, data.table, readxl, and others from a default

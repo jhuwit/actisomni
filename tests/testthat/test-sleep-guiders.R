@@ -269,3 +269,34 @@ test_that("rollmedian smoothing warns once about gaps", {
   )
   expect_length(grep("gap", warnings), 1)
 })
+
+test_that("rollmedian_full does not depend on the starting sample", {
+  set.seed(1)
+  sf <- 40
+  n <- sf * 60 * 10
+  data <- data.frame(
+    time = as.POSIXct("2020-01-01", tz = "UTC") + (seq_len(n) - 1) / sf,
+    X = stats::rnorm(n, 0, 0.3), Y = stats::rnorm(n, 0, 0.3),
+    Z = stats::rnorm(n, 1, 0.3)
+  )
+  attr(data, "sample_rate") <- sf
+  shifted <- data[-(1:3), ]
+  attr(shifted, "sample_rate") <- sf
+  # epochs at least 5 seconds from either end
+  interior <- function(x) x[x$time >= min(data$time) + 10 &
+                              x$time <= max(data$time) - 10, ]
+  full <- interior(acti_sleep_sib(data, smooth = "rollmedian_full"))
+  full_shift <- interior(acti_sleep_sib(shifted, smooth = "rollmedian_full"))
+  expect_equal(full_shift$angle, full$angle, tolerance = 1e-12)
+  # the GGIR-compatible default uses every 4th sample at 40 Hz, so it changes
+  ggir <- interior(acti_sleep_sib(data))
+  ggir_shift <- interior(acti_sleep_sib(shifted))
+  expect_false(isTRUE(all.equal(ggir_shift$angle, ggir$angle)))
+  # the median is over a five-second window of every sample (201 at 40 Hz)
+  expect_equal(
+    actisomni:::.acti_sleep_rollmedian(data$X, sf, full = TRUE),
+    stats::runmed(data$X, 201, endrule = "constant")
+  )
+  expect_equal(acti_sleep_hdcza(data, smooth = "rollmedian_full")$epoch_data$angle,
+               acti_sleep_sib(data, smooth = "rollmedian_full")$angle)
+})

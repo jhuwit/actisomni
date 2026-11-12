@@ -2,9 +2,12 @@
 % Please edit documentation in R/acti_sleep_models.R
 \name{acti_sleeper}
 \alias{acti_sleeper}
+\alias{acti_calculate_sleeper}
 \title{Estimate sleep with the sleeper model}
 \usage{
 acti_sleeper(data, epoch = 30L, model_dir)
+
+acti_calculate_sleeper(data, epoch = 30L, model_dir)
 }
 \arguments{
 \item{data}{A data frame containing timestamps and triaxial acceleration.}

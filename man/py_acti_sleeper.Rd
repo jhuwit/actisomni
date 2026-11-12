@@ -2,9 +2,18 @@
 % Please edit documentation in R/acti_sleep_models.R
 \name{py_acti_sleeper}
 \alias{py_acti_sleeper}
+\alias{py_acti_calculate_sleeper}
 \title{Estimate sleep with sleeper in an isolated Python process}
 \usage{
 py_acti_sleeper(
+  data,
+  epoch = 30L,
+  model_dir,
+  pyenv_function = function() sleeper::py_require_sleeper(),
+  show = FALSE
+)
+
+py_acti_calculate_sleeper(
   data,
   epoch = 30L,
   model_dir,

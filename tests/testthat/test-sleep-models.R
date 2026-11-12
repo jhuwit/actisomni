@@ -361,3 +361,10 @@ test_that("py_acti_rester calls the isolated rester backend", {
   expect_s3_class(out, "acti_sleep_estimate")
   expect_true(out$sleep)
 })
+
+test_that("acti_calculate_* aliases are the model wrappers", {
+  expect_identical(acti_calculate_asleep, acti_asleep)
+  expect_identical(py_acti_calculate_asleep, py_acti_asleep)
+  expect_identical(acti_calculate_sleeper, acti_sleeper)
+  expect_identical(py_acti_calculate_sleeper, py_acti_sleeper)
+})
