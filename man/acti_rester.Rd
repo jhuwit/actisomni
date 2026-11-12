@@ -72,10 +72,10 @@ The model code and weights must be downloaded first with
 \code{\link[rester:ar_setup]{rester::ar_setup()}}.
 }
 \examples{
+\dontshow{if (requireNamespace("rester", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 \donttest{
   # Runs only after rester::ar_setup(), so Python is not set up otherwise
-  if (requireNamespace("rester", quietly = TRUE) &&
-      rester::ar_have_repo() &&
+  if (rester::ar_have_repo() &&
       rester::ar_have_weights("lstm_sleepstages") &&
       rester::ar_python_modules_installed()) {
     data <- rester::ar_example_data(n_hours = 2.5)
@@ -83,6 +83,7 @@ The model code and weights must be downloaded first with
     head(out)
   }
 }
+\dontshow{\}) # examplesIf}
 }
 \references{
 Lorenzen NR, Brink-Kjaer A, Jennum PJ, Mignot E (2026).
