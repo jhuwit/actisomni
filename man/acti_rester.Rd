@@ -52,7 +52,7 @@ consecutive context windows; see \code{\link[rester:estimate_rest]{rester::estim
 \code{fill_zeros}, \code{detect_nonwear}, or \code{verbose}.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble with \code{time}, \code{sleep},
+An \code{acti_sleep_estimate} \code{tibble} with \code{time}, \code{sleep},
 \code{sleep_probability}, \code{sleep_stage}, \code{nonwear}, and \code{method}.
 \code{sleep_probability} is one minus the probability of wake, \code{sleep_stage}
 is the most probable of \code{"deep"}, \code{"light"}, \code{"rem"}, and \code{"wake"}, and

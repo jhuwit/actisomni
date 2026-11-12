@@ -29,7 +29,7 @@ available.}
 
 \item{fusion}{Consensus rule: \code{"staple"} or \code{"majority"}.}
 
-\item{sleepwindow_type}{SPT or TimeInBed overlap rule.}
+\item{sleepwindow_type}{\code{SPT} or \code{TimeInBed} overlap rule.}
 
 \item{smooth}{Smoothing of the raw axes before the angle is computed:
 \code{"rollmedian"} (the default) takes a five-second rolling median of each

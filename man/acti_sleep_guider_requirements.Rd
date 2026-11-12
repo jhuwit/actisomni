@@ -7,7 +7,7 @@
 acti_sleep_guider_requirements()
 }
 \value{
-A tibble describing the required data for each guider.
+A \code{tibble} describing the required data for each guider.
 }
 \description{
 HDCZA and HorAngle take raw triaxial acceleration and create their own

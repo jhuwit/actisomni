@@ -42,7 +42,7 @@ samples, not time, so both rolling medians warn when the timestamps have
 gaps; fill or resample such data first.}
 }
 \value{
-A tibble with \code{time}, \code{sib}, and supporting epoch-level variables.
+A \code{tibble} with \code{time}, \code{sib}, and supporting epoch-level variables.
 }
 \description{
 For raw triaxial accelerometer data, the default \code{"vanHees2015"} method

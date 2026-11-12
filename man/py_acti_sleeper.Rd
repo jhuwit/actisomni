@@ -34,7 +34,7 @@ py_acti_calculate_sleeper(
 \item{show}{Whether to stream subprocess output.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble; see \code{\link[=acti_sleeper]{acti_sleeper()}}.
+An \code{acti_sleep_estimate} \code{tibble}; see \code{\link[=acti_sleeper]{acti_sleeper()}}.
 }
 \description{
 Uses \code{\link[sleeper:py_estimate_sleep]{sleeper::py_estimate_sleep()}} to run the same sleeper model as

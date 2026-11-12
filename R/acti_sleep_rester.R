@@ -109,7 +109,7 @@
 #'   `NULL`, `rester` chooses.
 #' @param ... Additional arguments passed to [rester::ar_read()], such as
 #'   `fill_zeros`, `detect_nonwear`, or `verbose`.
-#' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
+#' @return An `acti_sleep_estimate` `tibble` with `time`, `sleep`,
 #'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`.
 #'   `sleep_probability` is one minus the probability of wake, `sleep_stage`
 #'   is the most probable of `"deep"`, `"light"`, `"rem"`, and `"wake"`, and
@@ -163,7 +163,7 @@ acti_rester <- function(data, model = c("lstm_sleepstages",
 #' @inheritParams acti_rester
 #' @param pyenv_function Function that configures Python in the subprocess.
 #' @param show Whether to stream subprocess output.
-#' @return An `acti_sleep_estimate` tibble; see [acti_rester()].
+#' @return An `acti_sleep_estimate` `tibble`; see [acti_rester()].
 #' @export
 py_acti_rester <- function(data, model = c("lstm_sleepstages",
                                            "linear_sleepstages"),

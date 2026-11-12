@@ -58,7 +58,7 @@ consecutive context windows; see \code{\link[rester:estimate_rest]{rester::estim
 \code{fill_zeros}, \code{detect_nonwear}, or \code{verbose}.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble; see \code{\link[=acti_rester]{acti_rester()}}.
+An \code{acti_sleep_estimate} \code{tibble}; see \code{\link[=acti_rester]{acti_rester()}}.
 }
 \description{
 Uses \code{\link[rester:py_estimate_rest]{rester::py_estimate_rest()}} to run the same AcceleRest model as

@@ -67,7 +67,7 @@ clocks change back. This difference is known. To match such a device
 clock, use a fixed-offset time zone, e.g. \code{tz = "Etc/GMT-1"} for UTC+1.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble with \code{time}, \code{sleep},
+An \code{acti_sleep_estimate} \code{tibble} with \code{time}, \code{sleep},
 \code{sleep_probability}, \code{sleep_stage}, \code{nonwear}, and \code{method}. The asleep
 backend currently does not return probabilities, so \code{sleep_probability} is
 \code{NA}.

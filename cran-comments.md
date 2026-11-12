@@ -18,7 +18,7 @@ The update also adds:
 * A `smooth = "rollmedian_full"` option for the angle-based sleep guiders
   (the default is unchanged), and new `acti_calculate_*()` aliases.
 
-We know 0.4.0 was published recently (2026-10-26). We are submitting this
+We are submitting this
 update now so the next 'actibase' release does not trigger an install
 warning in 'actisomni'. We will space out future updates.
 

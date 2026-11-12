@@ -75,7 +75,7 @@ clocks change back. This difference is known. To match such a device
 clock, use a fixed-offset time zone, e.g. \code{tz = "Etc/GMT-1"} for UTC+1.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble; see \code{\link[=acti_asleep]{acti_asleep()}}.
+An \code{acti_sleep_estimate} \code{tibble}; see \code{\link[=acti_asleep]{acti_asleep()}}.
 }
 \description{
 Uses \code{\link[asleep:py_asleep]{asleep::py_asleep()}} to run the same asleep model as

@@ -12,7 +12,7 @@ acti_sleep_fuse_labels(
 )
 }
 \arguments{
-\item{labels}{A data frame, matrix, or tibble of logical/binary sleep-label
+\item{labels}{A data frame, matrix, or \code{tibble} of logical/binary sleep-label
 columns, such as the output of \code{acti_sleep_labels()}.}
 
 \item{threshold}{Posterior sleep-probability threshold for the fused label.}
@@ -20,7 +20,7 @@ columns, such as the output of \code{acti_sleep_labels()}.}
 \item{tolerance, max_iterations}{STAPLE convergence controls.}
 }
 \value{
-A tibble with \code{sleep_probability} and binary \code{sleep} columns. If
+A \code{tibble} with \code{sleep_probability} and binary \code{sleep} columns. If
 \code{labels} includes \code{time} or \code{epoch}, that index is retained. The fitted
 STAPLE parameters are attached as the \code{staple} attribute.
 }

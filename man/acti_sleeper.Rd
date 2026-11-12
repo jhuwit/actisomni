@@ -18,7 +18,7 @@ acti_calculate_sleeper(data, epoch = 30L, model_dir)
 \item{model_dir}{Directory containing the sleeper model files.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble with \code{time}, \code{sleep},
+An \code{acti_sleep_estimate} \code{tibble} with \code{time}, \code{sleep},
 \code{sleep_probability}, \code{sleep_stage}, \code{nonwear}, and \code{method}. The sleeper
 backend does not return probabilities or sleep stages, so those columns are
 \code{NA}.

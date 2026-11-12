@@ -17,8 +17,8 @@
   `py_acti_calculate_sleeper()` complete the `acti_calculate_*()` naming
   already used by `acti_calculate_asleep()`.
 * 'actiread' moved from Imports to Suggests. No package code used it; it is
-  only needed for examples and one test. This drops actiread, GGIRread,
-  read.gt3x, R.utils, janitor, data.table, readxl, and others from a default
+  only needed for examples and one test. This drops `actiread`, `GGIRread`,
+  `read.gt3x`, `R.utils`, `janitor`, `data.table`, `readxl`, and others from a default
   install (62 -> 47 recursive hard dependencies).
 
 # actisomni 0.4.0
@@ -60,7 +60,7 @@
 * `epoch` arguments (guiders, `acti_sleep_sib()`, `acti_sleep_ensemble()`,
   `acti_sleeper()`) accept numeric seconds or strings such as `"30 seconds"`,
   standardized with `actibase::acti_standardize_epoch()`.
-* Requires actibase (>= 0.8.0) for `acti_standardize_epoch()`.
+* Requires `actibase` (>= 0.8.0) for `acti_standardize_epoch()`.
 
 # actisomni 0.2.0
 
