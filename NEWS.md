@@ -1,5 +1,11 @@
 # actisomni 0.5.0
 
+* New `acti_rester()` and `py_acti_rester()` estimate sleep and sleep stages
+  (deep, light, REM, wake) with the AcceleRest model from the 'rester'
+  package (in Suggests; Lorenzen et al., 2026), returning the common
+  `acti_sleep_estimate` format. Data-frame input is passed with a fixed
+  clock so returned times are exact across daylight-saving transitions.
+  The `actipy` preprocessing information is kept in `attr(x, "info")`.
 * `acti_sleep_hdcza()`, `acti_sleep_horangle()`, `acti_sleep_sib()`, and
   `acti_sleep_ensemble()` gain `smooth = "rollmedian_full"`, a five-second
   rolling median over every sample. The default, `"rollmedian"`, is

@@ -15,7 +15,7 @@ status](https://www.r-pkg.org/badges/version/actisomni)](https://CRAN.R-project.
 `actisomni` estimates sleep from wrist-worn accelerometry. It provides
 sleep-period-time (SPT) guiders, sustained-inactivity-bout (SIB) labels,
 consensus sleep labels, diary helpers, and wrappers for the `asleep`,
-`sleeper`, and `rester` machine-learning models.
+`sleeper`, and `rester` (AcceleRest) machine-learning models.
 
 The guider functions identify a likely main sleep window. Combine one or
 more guiders with a SIB label when an epoch-level sleep/wake label is
@@ -100,17 +100,16 @@ sum(diary_window$window)
 
 ## Machine-learning model wrappers
 
-`acti_asleep()`, `acti_sleeper()`, and `acti_rester()` all require
-complete, strictly time-ordered raw triaxial data. They return the same
-columns: `time`, `sleep`, `sleep_probability`, `sleep_stage`, `nonwear`,
-and `method`.
+`acti_asleep()`, `acti_sleeper()`, and `acti_rester()` require complete,
+strictly time-ordered raw triaxial data. They return the same columns:
+`time`, `sleep`, `sleep_probability`, `sleep_stage`, `nonwear`, and
+`method`.
 
 The models and their Python requirements are managed by the upstream
 packages. For `sleeper`, download the model files first and provide
-their directory as `model_dir`. For `rester`, install it from GitHub
-(`remotes::install_github("jhuwit/rester")`) and download the AcceleRest
-code and weights with `rester::ar_setup()`; it needs at least 2.1 hours
-of data.
+their directory as `model_dir`. For `rester`, run `rester::ar_setup()`
+once to download the AcceleRest code and weights; `acti_rester()` also
+returns sleep stages and needs at least about 2.1 hours of data.
 
 ``` r
 asleep_estimate <- acti_asleep(raw, verbose = FALSE)
