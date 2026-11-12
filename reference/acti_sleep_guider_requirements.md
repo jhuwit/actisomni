@@ -12,7 +12,7 @@ acti_sleep_guider_requirements()
 
 ## Value
 
-A tibble describing the required data for each guider.
+A `tibble` describing the required data for each guider.
 
 ## Examples
 

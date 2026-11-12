@@ -21,11 +21,11 @@ acti_sleep_labels(sib, guiders, sleepwindow_type = c("SPT", "TimeInBed"))
 
 - sleepwindow_type:
 
-  The SPT or TimeInBed overlap rule.
+  The `SPT` or `TimeInBed` overlap rule.
 
 ## Value
 
-A tibble with one logical `sleep_<guider>` column per guider.
+A `tibble` with one logical `sleep_<guider>` column per guider.
 
 ## Examples
 

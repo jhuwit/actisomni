@@ -16,7 +16,7 @@ acti_sleep_diary(data, onset, wakeup)
 
 - onset, wakeup:
 
-  POSIXct values defining a diary sleep window.
+  `POSIXct` values defining a diary sleep window.
 
 ## Value
 

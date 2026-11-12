@@ -10,6 +10,8 @@ model is called.
 
 ``` r
 acti_sleeper(data, epoch = 30L, model_dir)
+
+acti_calculate_sleeper(data, epoch = 30L, model_dir)
 ```
 
 ## Arguments
@@ -29,7 +31,7 @@ acti_sleeper(data, epoch = 30L, model_dir)
 
 ## Value
 
-An `acti_sleep_estimate` tibble with `time`, `sleep`,
+An `acti_sleep_estimate` `tibble` with `time`, `sleep`,
 `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. The sleeper
 backend does not return probabilities or sleep stages, so those columns
 are `NA`.

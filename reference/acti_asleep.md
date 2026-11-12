@@ -93,7 +93,7 @@ acti_calculate_asleep(
 
 ## Value
 
-An `acti_sleep_estimate` tibble with `time`, `sleep`,
+An `acti_sleep_estimate` `tibble` with `time`, `sleep`,
 `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. The asleep
 backend currently does not return probabilities, so `sleep_probability`
 is `NA`.

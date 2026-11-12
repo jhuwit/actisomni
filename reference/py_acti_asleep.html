@@ -57,6 +57,20 @@ requirements separate from the current R session.</p>
 <span>  pyenv_function <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">asleep</span><span class="fu">::</span><span class="fu"><a href="https://jhuwit.github.io/asleep/reference/py_require_asleep.html" class="external-link">py_require_asleep</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  show <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tz <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">py_acti_calculate_asleep</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  min_wear_hours <span class="op">=</span> <span class="fl">22L</span>,</span>
+<span>  time_shift <span class="op">=</span> <span class="st">"0"</span>,</span>
+<span>  report_light_and_temp <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pytorch_device <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cpu"</span>, <span class="st">"cuda:0"</span><span class="op">)</span>,</span>
+<span>  sample_rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  force_download <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pyenv_function <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">asleep</span><span class="fu">::</span><span class="fu"><a href="https://jhuwit.github.io/asleep/reference/py_require_asleep.html" class="external-link">py_require_asleep</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  show <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tz <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -126,7 +140,7 @@ clock, use a fixed-offset time zone, e.g. <code>tz = "Etc/GMT-1"</code> for UTC+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An <code>acti_sleep_estimate</code> tibble; see <code><a href="acti_asleep.html">acti_asleep()</a></code>.</p>
+    <p>An <code>acti_sleep_estimate</code> <code>tibble</code>; see <code><a href="acti_asleep.html">acti_asleep()</a></code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -18,8 +18,8 @@ acti_sleep_fuse_labels(
 
 - labels:
 
-  A data frame, matrix, or tibble of logical/binary sleep-label columns,
-  such as the output of
+  A data frame, matrix, or `tibble` of logical/binary sleep-label
+  columns, such as the output of
   [`acti_sleep_labels()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_labels.md).
 
 - threshold:
@@ -32,7 +32,7 @@ acti_sleep_fuse_labels(
 
 ## Value
 
-A tibble with `sleep_probability` and binary `sleep` columns. If
+A `tibble` with `sleep_probability` and binary `sleep` columns. If
 `labels` includes `time` or `epoch`, that index is retained. The fitted
 STAPLE parameters are attached as the `staple` attribute.
 

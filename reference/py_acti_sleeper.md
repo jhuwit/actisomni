@@ -16,6 +16,14 @@ py_acti_sleeper(
   pyenv_function = function() sleeper::py_require_sleeper(),
   show = FALSE
 )
+
+py_acti_calculate_sleeper(
+  data,
+  epoch = 30L,
+  model_dir,
+  pyenv_function = function() sleeper::py_require_sleeper(),
+  show = FALSE
+)
 ```
 
 ## Arguments
@@ -43,5 +51,5 @@ py_acti_sleeper(
 
 ## Value
 
-An `acti_sleep_estimate` tibble; see
+An `acti_sleep_estimate` `tibble`; see
 [`acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md).

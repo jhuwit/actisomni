@@ -23,6 +23,20 @@ py_acti_asleep(
   show = FALSE,
   tz = NULL
 )
+
+py_acti_calculate_asleep(
+  data,
+  min_wear_hours = 22L,
+  time_shift = "0",
+  report_light_and_temp = FALSE,
+  pytorch_device = c("cpu", "cuda:0"),
+  sample_rate = NULL,
+  verbose = TRUE,
+  force_download = FALSE,
+  pyenv_function = function() asleep::py_require_asleep(),
+  show = FALSE,
+  tz = NULL
+)
 ```
 
 ## Arguments
@@ -93,5 +107,5 @@ py_acti_asleep(
 
 ## Value
 
-An `acti_sleep_estimate` tibble; see
+An `acti_sleep_estimate` `tibble`; see
 [`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md).

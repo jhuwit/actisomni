@@ -2,10 +2,39 @@
 
 ## actisomni 0.5.0
 
+- New
+  [`acti_rester()`](https://jhuwit.github.io/actisomni/reference/acti_rester.md)
+  and
+  [`py_acti_rester()`](https://jhuwit.github.io/actisomni/reference/py_acti_rester.md)
+  estimate sleep and sleep stages (deep, light, REM, wake) with the
+  AcceleRest model from the ‘rester’ package (in Suggests; Lorenzen et
+  al., 2026), returning the common `acti_sleep_estimate` format.
+  Data-frame input is passed with a fixed clock so returned times are
+  exact across daylight-saving transitions. The `actipy` preprocessing
+  information is kept in `attr(x, "info")`.
+- [`acti_sleep_hdcza()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_hdcza.md),
+  [`acti_sleep_horangle()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_horangle.md),
+  [`acti_sleep_sib()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_sib.md),
+  and
+  [`acti_sleep_ensemble()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_ensemble.md)
+  gain `smooth = "rollmedian_full"`, a five-second rolling median over
+  every sample. The default, `"rollmedian"`, is unchanged: like GGIR it
+  uses every `floor(sample_rate / 10)`-th sample, so angles, and the
+  HDCZA window, can change with the sample at which the data start
+  (e.g. after subsetting to wear time). `"rollmedian_full"` removes this
+  dependence but no longer matches GGIR’s `anglez` exactly.
+- New aliases
+  [`py_acti_calculate_asleep()`](https://jhuwit.github.io/actisomni/reference/py_acti_asleep.md),
+  [`acti_calculate_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md),
+  and
+  [`py_acti_calculate_sleeper()`](https://jhuwit.github.io/actisomni/reference/py_acti_sleeper.md)
+  complete the `acti_calculate_*()` naming already used by
+  [`acti_calculate_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md).
 - ‘actiread’ moved from Imports to Suggests. No package code used it; it
-  is only needed for examples and one test. This drops actiread,
-  GGIRread, read.gt3x, R.utils, janitor, data.table, readxl, and others
-  from a default install (62 -\> 47 recursive hard dependencies).
+  is only needed for examples and one test. This drops `actiread`,
+  `GGIRread`, `read.gt3x`, `R.utils`, `janitor`, `data.table`, `readxl`,
+  and others from a default install (62 -\> 47 recursive hard
+  dependencies).
 
 ## actisomni 0.4.0
 
@@ -65,7 +94,7 @@ CRAN release: 2026-10-26
   accept numeric seconds or strings such as `"30 seconds"`, standardized
   with
   [`actibase::acti_standardize_epoch()`](https://jhuwit.github.io/actibase/reference/acti_standardize_epoch.html).
-- Requires actibase (\>= 0.8.0) for `acti_standardize_epoch()`.
+- Requires `actibase` (\>= 0.8.0) for `acti_standardize_epoch()`.
 
 ## actisomni 0.2.0
 

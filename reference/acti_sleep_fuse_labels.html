@@ -55,7 +55,7 @@ sensitivity and specificity using expectation-maximisation.</p>
 
 
 <dl><dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
-<dd><p>A data frame, matrix, or tibble of logical/binary sleep-label
+<dd><p>A data frame, matrix, or <code>tibble</code> of logical/binary sleep-label
 columns, such as the output of <code><a href="acti_sleep_labels.html">acti_sleep_labels()</a></code>.</p></dd>
 
 
@@ -69,7 +69,7 @@ columns, such as the output of <code><a href="acti_sleep_labels.html">acti_sleep
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A tibble with <code>sleep_probability</code> and binary <code>sleep</code> columns. If
+    <p>A <code>tibble</code> with <code>sleep_probability</code> and binary <code>sleep</code> columns. If
 <code>labels</code> includes <code>time</code> or <code>epoch</code>, that index is retained. The fitted
 STAPLE parameters are attached as the <code>staple</code> attribute.</p>
     </div>

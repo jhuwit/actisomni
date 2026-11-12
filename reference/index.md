@@ -5,6 +5,8 @@
 - [`acti_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
   [`acti_calculate_asleep()`](https://jhuwit.github.io/actisomni/reference/acti_asleep.md)
   : Estimate sleep with the asleep model
+- [`acti_rester()`](https://jhuwit.github.io/actisomni/reference/acti_rester.md)
+  : Estimate sleep with the AcceleRest model
 - [`acti_sleep_diary()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_diary.md)
   : Identify a diary-defined sleep window
 - [`acti_sleep_ensemble()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_ensemble.md)
@@ -34,8 +36,13 @@
 - [`acti_sleep_sib()`](https://jhuwit.github.io/actisomni/reference/acti_sleep_sib.md)
   : Detect sustained inactivity bouts (SIBs)
 - [`acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md)
+  [`acti_calculate_sleeper()`](https://jhuwit.github.io/actisomni/reference/acti_sleeper.md)
   : Estimate sleep with the sleeper model
 - [`py_acti_asleep()`](https://jhuwit.github.io/actisomni/reference/py_acti_asleep.md)
+  [`py_acti_calculate_asleep()`](https://jhuwit.github.io/actisomni/reference/py_acti_asleep.md)
   : Estimate sleep with asleep in an isolated Python process
+- [`py_acti_rester()`](https://jhuwit.github.io/actisomni/reference/py_acti_rester.md)
+  : Estimate sleep with AcceleRest in an isolated Python process
 - [`py_acti_sleeper()`](https://jhuwit.github.io/actisomni/reference/py_acti_sleeper.md)
+  [`py_acti_calculate_sleeper()`](https://jhuwit.github.io/actisomni/reference/py_acti_sleeper.md)
   : Estimate sleep with sleeper in an isolated Python process
