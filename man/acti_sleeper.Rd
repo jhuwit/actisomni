@@ -2,9 +2,12 @@
 % Please edit documentation in R/acti_sleep_models.R
 \name{acti_sleeper}
 \alias{acti_sleeper}
+\alias{acti_calculate_sleeper}
 \title{Estimate sleep with the sleeper model}
 \usage{
 acti_sleeper(data, epoch = 30L, model_dir)
+
+acti_calculate_sleeper(data, epoch = 30L, model_dir)
 }
 \arguments{
 \item{data}{A data frame containing timestamps and triaxial acceleration.}
@@ -15,7 +18,7 @@ acti_sleeper(data, epoch = 30L, model_dir)
 \item{model_dir}{Directory containing the sleeper model files.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble with \code{time}, \code{sleep},
+An \code{acti_sleep_estimate} \code{tibble} with \code{time}, \code{sleep},
 \code{sleep_probability}, \code{sleep_stage}, \code{nonwear}, and \code{method}. The sleeper
 backend does not return probabilities or sleep stages, so those columns are
 \code{NA}.

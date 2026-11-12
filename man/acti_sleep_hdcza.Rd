@@ -13,7 +13,7 @@ acti_sleep_hdcza(
   ignore_invalid = FALSE,
   min_block_minutes = 30,
   max_gap_minutes = 60,
-  smooth = c("rollmedian", "none")
+  smooth = c("rollmedian", "rollmedian_full", "none")
 )
 }
 \arguments{
@@ -45,10 +45,16 @@ use \code{NA} to treat them as no movement.}
 \item{smooth}{Smoothing of the raw axes before the angle is computed:
 \code{"rollmedian"} (the default) takes a five-second rolling median of each
 axis first, as described by van Hees et al. (2015, 2018) and implemented
-in GGIR, so angles agree with GGIR's \code{anglez}; \code{"none"} computes the
-angle from each raw sample, as in actisomni 0.3.0 and earlier.  The
-median is taken over samples, not time, so \code{"rollmedian"} warns when the
-timestamps have gaps; fill or resample such data first.}
+in GGIR, so angles agree with GGIR's \code{anglez}. Like GGIR, it takes the
+median over every \code{floor(sample_rate / 10)}-th sample (every 8th at
+85.7 Hz), so the angles change slightly with the sample at which the data
+start, for example after subsetting. \code{"rollmedian_full"} takes the
+five-second median over every sample instead, so the angles do not
+depend on where the data start, except within 2.5 seconds of either end;
+it no longer matches GGIR exactly. \code{"none"} computes the angle from each
+raw sample, as in actisomni 0.3.0 and earlier. The median is taken over
+samples, not time, so both rolling medians warn when the timestamps have
+gaps; fill or resample such data first.}
 }
 \value{
 An \code{acti_sleep_guider} object. \code{window} is the selected SPT guider;

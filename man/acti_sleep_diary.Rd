@@ -9,7 +9,7 @@ acti_sleep_diary(data, onset, wakeup)
 \arguments{
 \item{data}{A data frame containing timestamps.}
 
-\item{onset, wakeup}{POSIXct values defining a diary sleep window.}
+\item{onset, wakeup}{\code{POSIXct} values defining a diary sleep window.}
 }
 \value{
 An \code{acti_sleep_guider} object. Missing diary times return an empty

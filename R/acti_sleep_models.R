@@ -181,7 +181,7 @@
 #'   does not change for daylight saving is an hour off from `tz` until the
 #'   clocks change back. This difference is known. To match such a device
 #'   clock, use a fixed-offset time zone, e.g. `tz = "Etc/GMT-1"` for UTC+1.
-#' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
+#' @return An `acti_sleep_estimate` `tibble` with `time`, `sleep`,
 #'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. The asleep
 #'   backend currently does not return probabilities, so `sleep_probability` is
 #'   `NA`.
@@ -224,7 +224,7 @@ acti_calculate_asleep = acti_asleep
 #' @inheritParams acti_asleep
 #' @param pyenv_function Function that configures Python in the subprocess.
 #' @param show Whether to stream subprocess output.
-#' @return An `acti_sleep_estimate` tibble; see [acti_asleep()].
+#' @return An `acti_sleep_estimate` `tibble`; see [acti_asleep()].
 #' @export
 py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
                            report_light_and_temp = FALSE,
@@ -254,6 +254,10 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
   .acti_sleep_asleep_result(result, tz = tz, offset = offset)
 }
 
+#' @export
+#' @rdname py_acti_asleep
+py_acti_calculate_asleep = py_acti_asleep
+
 #' Estimate sleep with the sleeper model
 #'
 #' Runs [sleeper::estimate_sleep()] on complete, time-ordered raw triaxial
@@ -264,7 +268,7 @@ py_acti_asleep <- function(data, min_wear_hours = 22L, time_shift = "0",
 #' @param epoch Output epoch, in whole seconds or a string such as
 #'   `"30 seconds"`; see [actibase::acti_standardize_epoch()].
 #' @param model_dir Directory containing the sleeper model files.
-#' @return An `acti_sleep_estimate` tibble with `time`, `sleep`,
+#' @return An `acti_sleep_estimate` `tibble` with `time`, `sleep`,
 #'   `sleep_probability`, `sleep_stage`, `nonwear`, and `method`. The sleeper
 #'   backend does not return probabilities or sleep stages, so those columns are
 #'   `NA`.
@@ -294,6 +298,10 @@ acti_sleeper <- function(data, epoch = 30L, model_dir) {
   .acti_sleep_sleeper_result(predictions)
 }
 
+#' @export
+#' @rdname acti_sleeper
+acti_calculate_sleeper = acti_sleeper
+
 #' Estimate sleep with sleeper in an isolated Python process
 #'
 #' Uses [sleeper::py_estimate_sleep()] to run the same sleeper model as
@@ -302,7 +310,7 @@ acti_sleeper <- function(data, epoch = 30L, model_dir) {
 #' @inheritParams acti_sleeper
 #' @param pyenv_function Function that configures Python in the subprocess.
 #' @param show Whether to stream subprocess output.
-#' @return An `acti_sleep_estimate` tibble; see [acti_sleeper()].
+#' @return An `acti_sleep_estimate` `tibble`; see [acti_sleeper()].
 #' @export
 py_acti_sleeper <- function(data, epoch = 30L, model_dir,
                             pyenv_function = function() sleeper::py_require_sleeper(),
@@ -331,3 +339,7 @@ py_acti_sleeper <- function(data, epoch = 30L, model_dir,
   }
   .acti_sleep_sleeper_result(predictions)
 }
+
+#' @export
+#' @rdname py_acti_sleeper
+py_acti_calculate_sleeper = py_acti_sleeper

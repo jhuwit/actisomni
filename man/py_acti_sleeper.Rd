@@ -2,9 +2,18 @@
 % Please edit documentation in R/acti_sleep_models.R
 \name{py_acti_sleeper}
 \alias{py_acti_sleeper}
+\alias{py_acti_calculate_sleeper}
 \title{Estimate sleep with sleeper in an isolated Python process}
 \usage{
 py_acti_sleeper(
+  data,
+  epoch = 30L,
+  model_dir,
+  pyenv_function = function() sleeper::py_require_sleeper(),
+  show = FALSE
+)
+
+py_acti_calculate_sleeper(
   data,
   epoch = 30L,
   model_dir,
@@ -25,7 +34,7 @@ py_acti_sleeper(
 \item{show}{Whether to stream subprocess output.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble; see \code{\link[=acti_sleeper]{acti_sleeper()}}.
+An \code{acti_sleep_estimate} \code{tibble}; see \code{\link[=acti_sleeper]{acti_sleeper()}}.
 }
 \description{
 Uses \code{\link[sleeper:py_estimate_sleep]{sleeper::py_estimate_sleep()}} to run the same sleeper model as

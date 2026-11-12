@@ -253,3 +253,10 @@ test_that("model wrappers reject incomplete or unordered acceleration data", {
   expect_error(acti_asleep(data, verbose = FALSE), "complete")
   expect_error(acti_sleeper(data, model_dir = tempdir()), "complete")
 })
+
+test_that("acti_calculate_* aliases are the model wrappers", {
+  expect_identical(acti_calculate_asleep, acti_asleep)
+  expect_identical(py_acti_calculate_asleep, py_acti_asleep)
+  expect_identical(acti_calculate_sleeper, acti_sleeper)
+  expect_identical(py_acti_calculate_sleeper, py_acti_sleeper)
+})

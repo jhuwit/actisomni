@@ -1,8 +1,24 @@
 # actisomni 0.5.0
 
+* New `acti_rester()` and `py_acti_rester()` estimate sleep and sleep stages
+  (deep, light, REM, wake) with the AcceleRest model from the 'rester'
+  package (in Suggests; Lorenzen et al., 2026), returning the common
+  `acti_sleep_estimate` format. Data-frame input is passed with a fixed
+  clock so returned times are exact across daylight-saving transitions.
+  The `actipy` preprocessing information is kept in `attr(x, "info")`.
+* `acti_sleep_hdcza()`, `acti_sleep_horangle()`, `acti_sleep_sib()`, and
+  `acti_sleep_ensemble()` gain `smooth = "rollmedian_full"`, a five-second
+  rolling median over every sample. The default, `"rollmedian"`, is
+  unchanged: like GGIR it uses every `floor(sample_rate / 10)`-th sample, so
+  angles, and the HDCZA window, can change with the sample at which the data
+  start (e.g. after subsetting to wear time). `"rollmedian_full"` removes this
+  dependence but no longer matches GGIR's `anglez` exactly.
+* New aliases `py_acti_calculate_asleep()`, `acti_calculate_sleeper()`, and
+  `py_acti_calculate_sleeper()` complete the `acti_calculate_*()` naming
+  already used by `acti_calculate_asleep()`.
 * 'actiread' moved from Imports to Suggests. No package code used it; it is
-  only needed for examples and one test. This drops actiread, GGIRread,
-  read.gt3x, R.utils, janitor, data.table, readxl, and others from a default
+  only needed for examples and one test. This drops `actiread`, `GGIRread`,
+  `read.gt3x`, `R.utils`, `janitor`, `data.table`, `readxl`, and others from a default
   install (62 -> 47 recursive hard dependencies).
 
 # actisomni 0.4.0
@@ -44,7 +60,7 @@
 * `epoch` arguments (guiders, `acti_sleep_sib()`, `acti_sleep_ensemble()`,
   `acti_sleeper()`) accept numeric seconds or strings such as `"30 seconds"`,
   standardized with `actibase::acti_standardize_epoch()`.
-* Requires actibase (>= 0.8.0) for `acti_standardize_epoch()`.
+* Requires `actibase` (>= 0.8.0) for `acti_standardize_epoch()`.
 
 # actisomni 0.2.0
 

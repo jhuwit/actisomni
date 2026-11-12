@@ -2,9 +2,24 @@
 % Please edit documentation in R/acti_sleep_models.R
 \name{py_acti_asleep}
 \alias{py_acti_asleep}
+\alias{py_acti_calculate_asleep}
 \title{Estimate sleep with asleep in an isolated Python process}
 \usage{
 py_acti_asleep(
+  data,
+  min_wear_hours = 22L,
+  time_shift = "0",
+  report_light_and_temp = FALSE,
+  pytorch_device = c("cpu", "cuda:0"),
+  sample_rate = NULL,
+  verbose = TRUE,
+  force_download = FALSE,
+  pyenv_function = function() asleep::py_require_asleep(),
+  show = FALSE,
+  tz = NULL
+)
+
+py_acti_calculate_asleep(
   data,
   min_wear_hours = 22L,
   time_shift = "0",
@@ -60,7 +75,7 @@ clocks change back. This difference is known. To match such a device
 clock, use a fixed-offset time zone, e.g. \code{tz = "Etc/GMT-1"} for UTC+1.}
 }
 \value{
-An \code{acti_sleep_estimate} tibble; see \code{\link[=acti_asleep]{acti_asleep()}}.
+An \code{acti_sleep_estimate} \code{tibble}; see \code{\link[=acti_asleep]{acti_asleep()}}.
 }
 \description{
 Uses \code{\link[asleep:py_asleep]{asleep::py_asleep()}} to run the same asleep model as

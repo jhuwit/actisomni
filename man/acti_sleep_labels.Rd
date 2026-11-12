@@ -12,10 +12,10 @@ acti_sleep_labels(sib, guiders, sleepwindow_type = c("SPT", "TimeInBed"))
 \item{guiders}{A named list of \code{acti_sleep_guider} objects. All guider
 windows must use the same epoch grid as \code{sib}.}
 
-\item{sleepwindow_type}{The SPT or TimeInBed overlap rule.}
+\item{sleepwindow_type}{The \code{SPT} or \code{TimeInBed} overlap rule.}
 }
 \value{
-A tibble with one logical \verb{sleep_<guider>} column per guider.
+A \code{tibble} with one logical \verb{sleep_<guider>} column per guider.
 }
 \description{
 Create sleep/wake labels for multiple guiders
